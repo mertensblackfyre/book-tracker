@@ -18,8 +18,9 @@
 html,
 body {
   width: 100%;
+  height: 100vh;
   overflow-x: hidden;
-  background-image: url(./assets/home/background-home-desktop.jpg);
+  background-image: url(./assets/crew/background-crew-desktop.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   color: var(--Text);
@@ -110,72 +111,6 @@ nav {
   background-color: var(--Text);
   transition: all 0.2s ease;
 }
-
-.home-page {
-  width: 100%;
-  height: 80vh;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-around;
-  animation: myAnim 1s ease 0s 1 normal forwards;
-}
-@keyframes myAnim {
-  0% {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.text {
-  width: 30%;
-  height: 90%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.text h5 {
-  color: var(--Gray);
-  text-transform: uppercase;
-  font-size: 29px;
-  font-weight: 300;
-}
-.text h2 {
-  font-size: 140px;
-  font-weight: 100;
-  text-transform: uppercase;
-  font-family: var(--Sorts-Mill-Goudy);
-}
-
-.text p {
-  color: var(--Gray);
-  font-size: 18px;
-  font-weight: 300;
-}
-
-.circle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 230px;
-  height: 230px;
-  border-radius: 9999px;
-  background-color: var(--Text);
-  color: black;
-  font-weight: 300;
-  font-size: 35px;
-  font-family: var(--Sorts-Mill-Goudy);
-  text-transform: uppercase;
-  cursor: pointer;
-  margin-bottom: 50px;
-}
-
 .nav-toggle,
 .close-btn {
   display: none;
@@ -185,23 +120,7 @@ nav {
 }
 @media screen and (max-width: 900px) {
   body {
-    background-image: url(./assets/home/background-home-tablet.jpg);
-  }
-  .home-page {
-    text-align: center;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-    flex-direction: column;
-  }
-  .text {
-    margin: 60px 0;
-    align-items: center;
-    width: 90%;
-  }
-  .text h2 {
-    margin: 20px 0;
+    background-image: url(./assets/crew/background-crew-tablet.jpg);
   }
 }
 @media screen and (max-width: 768px) {
@@ -251,41 +170,7 @@ nav {
   }
 }
 @media screen and (max-width: 650px) {
-  .text h5 {
-    font-size: 25px;
-  }
-  .text h2 {
-    font-size: 140px;
-  }
-
-  .circle {
-    width: 210px;
-    height: 210px;
-    font-size: 35px;
-  }
   body {
-    background-image: url(./assets/home/background-home-mobile.jpg);
-  }
-}
-@media screen and (max-width: 450px) {
-  .text h5 {
-    font-size: 21px;
-  }
-  .text h2 {
-    font-size: 100px;
-  }
-  .text p {
-    font-size: 16px;
-  }
-
-  .circle {
-    width: 190px;
-    height: 190px;
-    font-size: 30px;
-  }
-}
-@media screen and (max-width: 375px) {
-  .text h2 {
-    font-size: 90px;
+    background-image: url(./assets/crew/background-crew-mobile.jpg);
   }
 }
