@@ -175,7 +175,10 @@ nav {
   cursor: pointer;
   margin-bottom: 50px;
 }
-
+.circle a {
+  text-decoration: none;
+  color: black;
+}
 .nav-toggle,
 .close-btn {
   display: none;
@@ -229,13 +232,10 @@ nav {
     margin-right: 20px;
   }
   .list {
-    transform: translateY(-50px);
-    transition: var(--transtion);
     overflow: hidden;
     height: 0;
   }
   .show-list {
-    transform: translateY(50px);
     position: absolute;
     font-size: 18px;
     display: flex;
@@ -247,6 +247,18 @@ nav {
     transition: all 0.3s linear;
     z-index: 3;
     background-color: black;
+    animation: myAnims 1s ease 0s 1 normal forwards;
+  }
+  @keyframes myAnims {
+    0% {
+      opacity: 0;
+      transform: translateY(-250px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(25px);
+    }
   }
   .show-list li a {
     margin-left: 15px;

@@ -24,7 +24,8 @@ Users should be able to:
 
 ### Screenshot
 
-<!-- ![Screen Shot]() -->
+![Mobile](./assets/mobile.png)
+![Desktop](./assets/desktop.png)
 
 ### Links
 

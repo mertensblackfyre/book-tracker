@@ -20,7 +20,7 @@ body {
   width: 100%;
   height: 100vh;
   overflow-x: hidden;
-  background-image: url(./assets/crew/background-crew-desktop.jpg);
+  background-image: url(./assets/technology/background-technology-desktop.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   color: var(--Text);
@@ -130,13 +130,12 @@ nav {
  ******************************************************************************************
 
 
-                                         Main Page
+                                      Main Page
 
 
 ********************************************************************************************
   */
-
-.crew-page {
+.tech-page {
   width: 100%;
   height: 70%;
   display: flex;
@@ -185,19 +184,52 @@ nav {
   width: 60%;
   margin-top: 20px;
 }
+.tabs {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 40px;
+}
+.tabs button {
+  margin: 20px 0;
+  width: 70px;
+  height: 70px;
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+  border: 1px solid var(--Text);
+  background-color: transparent;
+  color: var(--Text);
+  font-size: 40px;
+  font-family: var(--Bellefair);
+  transition: var(--transtion);
+}
+.btns-hover {
+  background-color: var(--Text);
+  color: black;
+  border: 1px solid black;
+}
+.text {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
 .name {
   font-family: var(--Bellefair);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 100;
   color: var(--Text);
-  font-size: 70px;
+  font-size: 65px;
   margin: 15px 0;
 }
-.role {
+.term {
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-size: 35px;
+  font-size: 20px;
   color: var(--Gray);
   font-weight: 100;
   font-family: var(--Bellefair);
@@ -208,24 +240,6 @@ nav {
   font-family: 300;
   margin: 15px 0;
 }
-.tabs {
-  width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.tabs button {
-  margin: 0 15px;
-  cursor: pointer;
-  outline: none;
-  border: none;
-  background-color: transparent;
-  color: var(--Text);
-  opacity: 0.6;
-}
-.tabs button:hover {
-  opacity: 1;
-}
 .image {
   width: 100%;
   height: 100%;
@@ -235,16 +249,16 @@ nav {
  ******************************************************************************************
 
 
-                                          Media Quries 900px
+                                        Media Query 920px
 
 
 ********************************************************************************************
   */
 @media screen and (max-width: 920px) {
   body {
-    background-image: url(./assets/crew/background-crew-tablet.jpg);
+    background-image: url(./assets/technology/background-technology-tablet.jpg);
   }
-  .crew-page {
+  .tech-page {
     flex-direction: column;
     height: auto;
   }
@@ -263,13 +277,28 @@ nav {
     flex-direction: column;
   }
   .tabs {
-    justify-content: center;
+    width: 100%;
+    flex-direction: row;
+    height: auto;
+    margin: 0;
+  }
+  .tabs button {
+    margin: 0 20px;
   }
   .image {
     width: 50%;
     height: 50%;
   }
 }
+/* 
+ ******************************************************************************************
+
+
+                                        Media Query 768px
+
+
+********************************************************************************************
+  */
 @media screen and (max-width: 768px) {
   .header {
     position: relative;
@@ -332,28 +361,28 @@ nav {
   }
 }
 /* 
- ******************************************************************************************
-
-
-                                          Media Quries 650px
-
-
-********************************************************************************************
-  */
+   ******************************************************************************************
+  
+  
+                                            Media Quries 650px
+  
+  
+  ********************************************************************************************
+    */
 @media screen and (max-width: 650px) {
   body {
-    background-image: url(./assets/crew/background-crew-mobile.jpg);
+    background-image: url(./assets/technology/background-technology-mobile.jpg);
   }
 }
 /* 
- ******************************************************************************************
-
-
-                                          Media Quries 550px
-
-
-********************************************************************************************
-  */
+   ******************************************************************************************
+  
+  
+                                            Media Quries 650px
+  
+  
+  ********************************************************************************************
+    */
 @media screen and (max-width: 550px) {
   .name {
     font-size: 50px;
@@ -364,40 +393,8 @@ nav {
   .text {
     width: 80%;
   }
-  .role {
-    font-size: 30px;
-  }
-  .image {
-    width: 85%;
-    height: 85%;
-  }
-}
-@media screen and (max-width: 450px) {
-  body {
-    background-image: url(./assets/crew/background-crew-mobile.jpg);
-  }
-  .name {
-    font-size: 45px;
-  }
-  .title {
-    width: 100%;
-  }
-  .text {
-    width: 80%;
-  }
   .image {
     width: 90%;
     height: 90%;
-  }
-  .role {
-    font-size: 25px;
-  }
-}
-@media screen and (max-width: 365px) {
-  .name {
-    font-size: 39px;
-  }
-  .role {
-    font-size: 20px;
   }
 }

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Space Tourism</title>
-    <link rel="stylesheet" href="crew.css" />
+    <link rel="stylesheet" href="tech.css" />
     <link
       rel="shortcut icon"
       href="https://img.icons8.com/external-itim2101-flat-itim2101/2x/external-space-space-and-galaxy-itim2101-flat-itim2101.png"
@@ -27,8 +27,8 @@
           <li>
             <a href="/destination page/destination.html">01 Destination</a>
           </li>
-          <li><a href="crew.html" id="active">02 Crew</a></li>
-          <li><a href="/tech page/tech.html">03 Technology</a></li>
+          <li><a href="/crew page/crew.html">02 Crew</a></li>
+          <li><a href="tech.html" id="active">03 Technology</a></li>
         </ul>
       </nav>
       <button class="nav-toggle">
@@ -38,41 +38,36 @@
         <img src="./assets/shared/icon-close.svg" alt="#" />
       </button>
     </div>
-    <div class="crew-page">
+    <div class="tech-page">
+      <div class="tabs">
+        <button class="btns" value="Launch vehicle">1</button>
+        <button class="btns" value="Spaceport">2</button>
+        <button class="btns" value="Space capsule">3</button>
+      </div>
       <div class="text-section">
         <div class="title">
-          <h2><span>02</span> Meet your Crew</h2>
+          <h2><span>03</span> Space Launch 101</h2>
         </div>
         <div class="text">
-          <h3 class="role">COMMANDER</h3>
-          <h2 class="name">Douglas Hurleyh</h2>
-          <p class="desc-person">
-            Douglas Gerald Hurley is an American engineer, former Marine Corps
-            pilot and former NASA astronaut. He launched into space for the
-            third time as commander of Crew Dragon Demo-2.
+          <h3 class="term">The Termonology...</h3>
+          <h2 class="name">Launch vehicle</h2>
+          <p class="desc-vehicle">
+            A launch vehicle or carrier rocket is a rocket-propelled vehicle
+            used to carry a payload from Earth's surface to space, usually to
+            Earth orbit or beyond. Our WEB-X carrier rocket is the most powerful
+            in operation. Standing 150 metres tall, it's quite an awe-inspiring
+            sight on the launch pad!
           </p>
-        </div>
-        <div class="tabs">
-          <button class="btns" value="Douglas Hurley">
-            <i class="fas fa-circle"></i>
-          </button>
-          <button class="btns" value="Victor Glover">
-            <i class="fas fa-circle"></i></button
-          ><button class="btns" value="Anousheh Ansari">
-            <i class="fas fa-circle"></i></button
-          ><button class="btns" value="Mark Shuttleworth">
-            <i class="fas fa-circle"></i>
-          </button>
         </div>
       </div>
       <div class="image-section">
         <img
-          src="./assets/crew/image-douglas-hurley.png"
+          src="./assets/technology/image-launch-vehicle-portrait.jpg"
           alt=""
           class="image"
         />
       </div>
     </div>
-    <script src="crew.js"></script>
+    <script src="tech.js"></script>
   </body>
 </html>
