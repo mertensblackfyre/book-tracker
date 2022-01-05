@@ -206,7 +206,7 @@ nav {
   font-family: var(--Bellefair);
   transition: var(--transtion);
 }
-.btns-hover {
+.tabs button:hover {
   background-color: var(--Text);
   color: black;
   border: 1px solid black;
