@@ -218,6 +218,7 @@ nav {
     background: transparent;
     height: auto;
     transition: var(--transtion);
+    z-index: 4;
   }
   .nav-toggle {
     display: flex;
@@ -228,7 +229,8 @@ nav {
     margin-right: 20px;
   }
   .list {
-    transform: translateY(0);
+    transform: translateY(-50px);
+    transition: var(--transtion);
     overflow: hidden;
     height: 0;
   }
