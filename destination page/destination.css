@@ -426,7 +426,8 @@ nav {
 
 @media screen and (max-width: 350px) {
   .title {
-    font-size: 13.4px;
+    font-size: 13px;
+    text-align: center;
   }
   .texts h2 {
     font-size: 75px;
