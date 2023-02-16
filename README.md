@@ -1,49 +1,16 @@
-# Frontend Mentor - Space tourism website solution
+# flut
 
-This is a solution to the [Space tourism website challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/space-tourism-multipage-website-gRWj1URZ3). Frontend Mentor challenges help you improve your coding skills by building realistic projects.
+A new Flutter project.
 
-## Table of contents
+## Getting Started
 
-- [Overview](#overview)
-  - [The challenge](#the-challenge)
-  - [Screenshot](#screenshot)
-  - [Links](#links)
-- [My process](#my-process)
-  - [Built with](#built-with)
-- [Author](#author)
+This project is a starting point for a Flutter application.
 
-## Overview
+A few resources to get you started if this is your first Flutter project:
 
-### The challenge
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-Users should be able to:
-
-- View the optimal layout for each of the website's pages depending on their device's screen size
-- See hover states for all interactive elements on the page
-- View each page and be able to toggle between the tabs to see new information
-
-### Screenshot
-
-![Mobile](./assets/mobile.png)
-![Desktop](./assets/desktop.png)
-
-### Links
-
-- Solution URL: [GitHub](https://github.com/amr8644/Space-Tourism)
-- Live Site URL: [Live Preview](https://jolly-turing-08c5a4.netlify.app/)
-
-## My process
-
-### Built with
-
-- Semantic HTML5 markup
-- CSS custom properties
-- Flexbox
-- CSS Grid
-- Mobile-first workflow
-- Javascript
-
-## Author
-
-- Amr Ashebo
-- Twitter - [@amr_ashebo](https://twitter.com/amr_ashebo)
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
