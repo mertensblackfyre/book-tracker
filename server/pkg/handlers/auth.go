@@ -1,43 +1,36 @@
-package handlders
+package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 
-	"github.com/clerkinc/clerk-sdk-go/clerk"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
+func Auth() {
+	// Your credentials should be obtained from the Google
+	// Developer Console (https://console.developers.google.com).
+	conf := &oauth2.Config{
+		ClientID:     "YOUR_CLIENT_ID",
+		ClientSecret: "YOUR_CLIENT_SECRET",
+		RedirectURL:  "YOUR_REDIRECT_URL",
+		Scopes: []string{
+			"https://www.googleapis.com/auth/bigquery",
+			"https://www.googleapis.com/auth/blogger",
+		},
+		Endpoint: google.Endpoint,
+	}
+	// Redirect user to Google's consent page to ask for permission
+	// for the scopes specified above.
+	url := conf.AuthCodeURL("state")
+	fmt.Printf("Visit the URL for the auth dialog: %v", url)
 
-func handleWebhook(w http.ResponseWriter, r *http.Request) {
-	// Verify webhook signature
-	err := clerk.Ver  VerifyWebhookSignature(r)
+	// Handle the exchange code to initiate a transport.
+	tok, err := conf.Exchange(oauth2.NoContext, "authorization-code")
 	if err != nil {
-		// Handle error
-		log.Println(err)
+		log.Fatal(err)
 	}
-
-	// Parse webhook payload
-	var payload client.Webhook
-		err = json.NewDecoder(r.Body).Decode(&payload)
-	if err != nil {
-		// Handle error
-	}
-
-	// Handle webhook event
-	switch payload.EventType {
-	case "user.created":
-		// Sync new user with database
-		fmt.Println("New user created:", payload.EventData.(clerk.User))
-	case "user.updated":
-		// Sync updated user with database
-		fmt.Println("User updated:", payload.EventData.(clerk.User))
-	case "user.deleted":
-		// Sync deleted user with database
-		fmt.Println("User deleted:", payload.EventData.(clerk.User))
-	default:
-		// Ignore other events
-		fmt.Println("Unknown event type:", payload.EventType)
-	}
+	client := conf.Client(oauth2.NoContext, tok)
+	client.Get("...")
 }

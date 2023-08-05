@@ -5,10 +5,11 @@ build:
 	cd cmd && go install main.go
 	
 migrateup:
-	migrate -path pkg/db/schema -database "mysql://root:fDCsOsfNSduADQ6I5evG@tcp(containers-us-west-34.railway.app:6940)/railway" -verbose up
+	migrate -database sqlite://./app.db -source file://./pkg\db\schema up
 
-migratedown:
-	migrate -path pkg/db/schema -database "mysql://root:fDCsOsfNSduADQ6I5evG@tcp(containers-us-west-34.railway.app:6940)/railway" -verbose drop 
 
+migratedrop:
+	migrate -database sqlite://./app.db -source file://./migrations down
+	
 generate:
 	.\sqlc.exe generate

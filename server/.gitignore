@@ -47,3 +47,4 @@ app.*.map.json
 
 sqlc
 migrate
+sqlite
