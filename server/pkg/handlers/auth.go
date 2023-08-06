@@ -1,36 +1,34 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
-	"log"
-
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
+	"net/http"
 )
 
-func Auth() {
-	// Your credentials should be obtained from the Google
-	// Developer Console (https://console.developers.google.com).
-	conf := &oauth2.Config{
-		ClientID:     "YOUR_CLIENT_ID",
-		ClientSecret: "YOUR_CLIENT_SECRET",
-		RedirectURL:  "YOUR_REDIRECT_URL",
-		Scopes: []string{
-			"https://www.googleapis.com/auth/bigquery",
-			"https://www.googleapis.com/auth/blogger",
-		},
-		Endpoint: google.Endpoint,
-	}
-	// Redirect user to Google's consent page to ask for permission
-	// for the scopes specified above.
-	url := conf.AuthCodeURL("state")
-	fmt.Printf("Visit the URL for the auth dialog: %v", url)
+func GoogleLogin(res http.ResponseWriter, req *http.Request) {
 
-	// Handle the exchange code to initiate a transport.
-	tok, err := conf.Exchange(oauth2.NoContext, "authorization-code")
-	if err != nil {
-		log.Fatal(err)
+	config := GoogleAuthConfig()
+	url := config.AuthCodeURL("ran")
+
+	http.Redirect(res, req, url, http.StatusSeeOther)
+}
+
+func GoogleCallBack(res http.ResponseWriter, req *http.Request) {
+
+	state := req.URL.Query()["state"][0]
+
+	if state != "ran" {
+		fmt.Fprintln(res, "States dont match")
+		return
 	}
-	client := conf.Client(oauth2.NoContext, tok)
-	client.Get("...")
+
+	code := req.URL.Query()["code"][0]
+	token, err := GoogleAuthConfig().Exchange(context.Background(), code)
+
+	if err != nil {
+		fmt.Fprintln(res, "Code-Token exchane failed")
+	}
+
+	
 }

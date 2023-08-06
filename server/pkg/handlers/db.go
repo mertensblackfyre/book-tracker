@@ -4,8 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v4"
 )
 
 func CreateTables(ctx context.Context, tx pgx.Tx) error {
@@ -15,24 +14,51 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 		return err
 	}
 
-	// Create the accounts table
-	log.Println("Creating accounts table.")
+	// Create the users table
+	log.Println("Creating users table...")
 	if _, err := tx.Exec(ctx,
-		"CREATE TABLE accounts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), balance INT8)"); err != nil {
+		`CREATE TABLE "users" (
+  		"id" integer PRIMARY KEY,
+  		"username" text,
+  		"role" text,
+  		"created_at" timestamp
+);`); err != nil {
+		return err
+	}
+
+	
+	log.Println("Creating books table...")
+	if _, err := tx.Exec(ctx,
+		`CREATE TABLE "books" (
+  		"id" integer PRIMARY KEY,
+  		"title" text,
+  		"author" text,
+  		"user_id" integer,
+  		"status" text,
+  		"price" real,
+ 	 	"created_at" timestamp
+		);
+`); err != nil {
+		return err
+	}
+
+	log.Println("Creating foreign key...")
+	if _, err := tx.Exec(ctx,
+		`ALTER TABLE "books" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");`); err != nil {
 		return err
 	}
 	return nil
 }
 
-func insertRows(ctx context.Context, tx pgx.Tx, accts [4]uuid.UUID) error {
-	// Insert four rows into the "accounts" table.
-	log.Println("Creating new rows...")
-	if _, err := tx.Exec(ctx,
-		"INSERT INTO accounts (id, balance) VALUES ($1, $2), ($3, $4), ($5, $6), ($7, $8)", accts[0], 250, accts[1], 100, accts[2], 500, accts[3], 300); err != nil {
-		return err
-	}
-	return nil
-}
+// func insertRows(ctx context.Context, tx pgx.Tx, accts [4]uuid.UUID) error {
+// 	// Insert four rows into the "accounts" table.
+// 	log.Println("Creating new rows...")
+// 	if _, err := tx.Exec(ctx,
+// 		"INSERT INTO accounts (id, balance) VALUES ($1, $2), ($3, $4), ($5, $6), ($7, $8)", accts[0], 250, accts[1], 100, accts[2], 500, accts[3], 300); err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // func printBalances(conn *pgx.Conn) error {
 //     rows, err := conn.Query(context.Background(), "SELECT id, balance FROM accounts")
