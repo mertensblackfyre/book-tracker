@@ -2,15 +2,21 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 
-	"github.com/jackc/pgx/v4"
+	pgx "github.com/jackc/pgx/v5"
 )
 
 func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	// Dropping existing table if it exists
 	log.Println("Drop existing accounts table if necessary.")
-	if _, err := tx.Exec(ctx, "DROP TABLE IF EXISTS accounts"); err != nil {
+	if _, err := tx.Exec(ctx, "DROP TABLE IF EXISTS books"); err != nil {
+		return err
+	}
+
+	log.Println("Drop existing accounts table if necessary.")
+	if _, err := tx.Exec(ctx, "DROP TABLE IF EXISTS users"); err != nil {
 		return err
 	}
 
@@ -19,14 +25,15 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	if _, err := tx.Exec(ctx,
 		`CREATE TABLE "users" (
   		"id" integer PRIMARY KEY,
-  		"username" text,
-  		"role" text,
+  		"emai" text,
+  		"name" text,
+		"picture" text,
+		"verified" boolean,
   		"created_at" timestamp
 );`); err != nil {
 		return err
 	}
 
-	
 	log.Println("Creating books table...")
 	if _, err := tx.Exec(ctx,
 		`CREATE TABLE "books" (
@@ -50,15 +57,22 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	return nil
 }
 
-// func insertRows(ctx context.Context, tx pgx.Tx, accts [4]uuid.UUID) error {
-// 	// Insert four rows into the "accounts" table.
-// 	log.Println("Creating new rows...")
-// 	if _, err := tx.Exec(ctx,
-// 		"INSERT INTO accounts (id, balance) VALUES ($1, $2), ($3, $4), ($5, $6), ($7, $8)", accts[0], 250, accts[1], 100, accts[2], 500, accts[3], 300); err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+func AddUser(ctx context.Context, tx pgx.Tx, data []byte) error {
+	// Insert four rows into the "accounts" table.
+	var user User
+
+	err := json.Unmarshal([]byte(data), &user)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Println("Adding user...")
+	if _, err := tx.Exec(ctx,
+		"INSERT INTO user (email,name,picture) VALUES ($1, $2, $3 ", user.Email, user.Name, user.Picture); err != nil {
+		return err
+	}
+	return nil
+}
 
 // func printBalances(conn *pgx.Conn) error {
 //     rows, err := conn.Query(context.Background(), "SELECT id, balance FROM accounts")
