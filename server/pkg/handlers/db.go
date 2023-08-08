@@ -2,12 +2,27 @@ package handlers
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 
 	pgx "github.com/jackc/pgx/v5"
 )
 
+func DBConfig() *pgx.Conn {
+
+	config, err := pgx.ParseConfig(GetEnv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	config.RuntimeParams["application_name"] = "$ docs_simplecrud_gopgx"
+	conn, err := pgx.ConnectConfig(context.Background(), config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return conn
+
+}
 func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	// Dropping existing table if it exists
 	log.Println("Drop existing accounts table if necessary.")
@@ -24,8 +39,8 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	log.Println("Creating users table...")
 	if _, err := tx.Exec(ctx,
 		`CREATE TABLE "users" (
-  		"id" integer PRIMARY KEY,
-  		"emai" text,
+  		"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  		"email" text,
   		"name" text,
 		"picture" text,
 		"verified" boolean,
@@ -37,10 +52,10 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	log.Println("Creating books table...")
 	if _, err := tx.Exec(ctx,
 		`CREATE TABLE "books" (
-  		"id" integer PRIMARY KEY,
+  		"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   		"title" text,
   		"author" text,
-  		"user_id" integer,
+  		"user_id" UUID,
   		"status" text,
   		"price" real,
  	 	"created_at" timestamp
@@ -52,23 +67,6 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	log.Println("Creating foreign key...")
 	if _, err := tx.Exec(ctx,
 		`ALTER TABLE "books" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");`); err != nil {
-		return err
-	}
-	return nil
-}
-
-func AddUser(ctx context.Context, tx pgx.Tx, data []byte) error {
-	// Insert four rows into the "accounts" table.
-	var user User
-
-	err := json.Unmarshal([]byte(data), &user)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	log.Println("Adding user...")
-	if _, err := tx.Exec(ctx,
-		"INSERT INTO user (email,name,picture) VALUES ($1, $2, $3 ", user.Email, user.Name, user.Picture); err != nil {
 		return err
 	}
 	return nil

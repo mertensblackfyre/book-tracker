@@ -14,18 +14,8 @@ import (
 
 func main() {
 	// Read in connection string
-	config, err := pgx.ParseConfig(handlers.GetEnv("DATABASE_URL"))
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	config.RuntimeParams["application_name"] = "$ docs_simplecrud_gopgx"
-	conn, err := pgx.ConnectConfig(context.Background(), config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer conn.Close(context.Background())
+	conn := handlers.DBConfig()
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -35,15 +25,27 @@ func main() {
 
 	r.Get("/auth/google", handlers.GoogleLogin)
 	r.Get("/auth/callback", handlers.GoogleCallBack)
+	r.Get("/users", func(w http.ResponseWriter, r *http.Request) {
+		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+			return handlers.PrintAllUsers(conn)
+		})
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+	})
 
 	// Set up table
-	err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+	err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 		return handlers.CreateTables(context.Background(), tx)
 	})
 
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	http.ListenAndServe(":5000", r)
+
+	defer conn.Close(context.Background())
 
 }

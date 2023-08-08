@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	crdbpgx "github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgxv5"
 	pgx "github.com/jackc/pgx/v5"
 )
 
@@ -21,7 +22,8 @@ func GoogleLogin(w http.ResponseWriter, r *http.Request) {
 
 func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 
-	var tx pgx.Tx
+	// var tx pgx.Tx
+	conn := DBConfig()
 
 	state := r.URL.Query()["state"][0]
 
@@ -45,8 +47,16 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 
 	data, err := ioutil.ReadAll(response.Body)
 
-	fmt.Println(w, string(data))
 
-	AddUser(context.Background(), tx, data)
+	err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		return AddUser(context.Background(), tx, data)
+	})
+
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
+
+	fmt.Println(w, string(data))
+	// AddUser(context.Background(), tx, data)
 
 }
