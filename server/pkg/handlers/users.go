@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 
 	pgx "github.com/jackc/pgx/v5"
@@ -14,21 +13,18 @@ func AddUser(ctx context.Context, tx pgx.Tx, data []byte) error {
 
 	err := json.Unmarshal([]byte(data), &user)
 	if err != nil {
-		log.Fatalln(err)
-	}
-
-	// Convert UUID to string
-	// id := uuid.New().String()
-
-	// Use ExecContext instead of Exec
-	if _, err := tx.Exec(ctx,
-		"INSERT INTO users (email ,name ,picture,verified,created_at) VALUES ($1, $2, $3, $4, NOW())", user.Email, user.Name, user.Picture, user.VerifiedEmail); err != nil {
-		fmt.Println("Hello World")
-		log.Fatalln(err)
+		log.Println(err)
 		return err
 	}
 
-	log.Println("Added users")
+	if _, err := tx.Exec(ctx,
+		"INSERT INTO users (email ,name ,picture,verified_email,created_at) VALUES ($1, $2, $3, $4, NOW())", user.Email, user.Name, user.Picture, user.VerifiedEmail); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// Store a new key and value in the session data.
+	Manager.Put(ctx, "name", user.Email)
 
 	return nil
 }

@@ -47,7 +47,6 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 
 	data, err := ioutil.ReadAll(response.Body)
 
-
 	err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 		return AddUser(context.Background(), tx, data)
 	})
@@ -55,8 +54,11 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
+}
 
-	fmt.Println(w, string(data))
-	// AddUser(context.Background(), tx, data)
+func Logout(w http.ResponseWriter, r *http.Request) error {
+	Manager.Destroy(r.Context())
 
+	fmt.Println(w, "Success")
+	return nil
 }

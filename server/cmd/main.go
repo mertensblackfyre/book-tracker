@@ -18,13 +18,23 @@ func main() {
 	conn := handlers.DBConfig()
 
 	r := chi.NewRouter()
+
+	handlers.InitSessions()
+	r.Use(handlers.Authenticate)
 	r.Use(middleware.Logger)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello World!"))
 	})
 
+	// Auth
 	r.Get("/auth/google", handlers.GoogleLogin)
 	r.Get("/auth/callback", handlers.GoogleCallBack)
+	r.Get("/logout", func(w http.ResponseWriter, r *http.Request) {
+		handlers.Logout(w, r)
+	})
+
+	// Users
 	r.Get("/users", func(w http.ResponseWriter, r *http.Request) {
 		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 			return handlers.PrintAllUsers(conn)
@@ -35,6 +45,8 @@ func main() {
 		}
 	})
 
+	// Books
+
 	// Set up table
 	err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 		return handlers.CreateTables(context.Background(), tx)
@@ -44,8 +56,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	http.ListenAndServe(":5000", r)
-
+	http.ListenAndServe(":5000", handlers.Manager.LoadAndSave(r))
 	defer conn.Close(context.Background())
 
 }
