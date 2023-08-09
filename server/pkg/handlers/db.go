@@ -38,28 +38,30 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	// Create the users table
 	log.Println("Creating users table...")
 	if _, err := tx.Exec(ctx,
-		`CREATE TABLE "users" (
-  		"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  		"email" text,
-  		"name" text,
-		"picture" text,
-		"verified" boolean,
-  		"created_at" timestamp
-);`); err != nil {
+		`CREATE TABLE users (
+  		id SERIAL PRIMARY KEY,
+  		email TEXT,
+  		name TEXT,
+  		picture TEXT,
+  		verified BOOLEAN,
+  		created_at TIMESTAMP
+);
+`); err != nil {
 		return err
 	}
 
 	log.Println("Creating books table...")
 	if _, err := tx.Exec(ctx,
-		`CREATE TABLE "books" (
-  		"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  		"title" text,
-  		"author" text,
-  		"user_id" UUID,
-  		"status" text,
-  		"price" real,
- 	 	"created_at" timestamp
-		);
+		`CREATE TABLE books (
+  id SERIAL PRIMARY KEY,
+  title TEXT,
+  author TEXT,
+  user_id INTEGER,
+  status TEXT,
+  price REAL,
+  created_at TIMESTAMP
+);
+
 `); err != nil {
 		return err
 	}
