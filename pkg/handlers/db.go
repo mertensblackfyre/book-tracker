@@ -59,6 +59,8 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
   user_id INTEGER,
   status TEXT,
   price REAL,
+  picture TEXT,
+  pages INT,
   created_at TIMESTAMP
 );
 
@@ -73,39 +75,3 @@ func CreateTables(ctx context.Context, tx pgx.Tx) error {
 	}
 	return nil
 }
-
-
-// func transferFunds(ctx context.Context, tx pgx.Tx, from uuid.UUID, to uuid.UUID, amount int) error {
-//     // Read the balance.
-//     var fromBalance int
-//     if err := tx.QueryRow(ctx,
-//         "SELECT balance FROM accounts WHERE id = $1", from).Scan(&fromBalance); err != nil {
-//         return err
-//     }
-
-//     if fromBalance < amount {
-//         log.Println("insufficient funds")
-//     }
-
-//     // Perform the transfer.
-//     log.Printf("Transferring funds from account with ID %s to account with ID %s...", from, to)
-//     if _, err := tx.Exec(ctx,
-//         "UPDATE accounts SET balance = balance - $1 WHERE id = $2", amount, from); err != nil {
-//         return err
-//     }
-//     if _, err := tx.Exec(ctx,
-//         "UPDATE accounts SET balance = balance + $1 WHERE id = $2", amount, to); err != nil {
-//         return err
-//     }
-//     return nil
-// }
-
-// func deleteRows(ctx context.Context, tx pgx.Tx, one uuid.UUID, two uuid.UUID) error {
-//     // Delete two rows into the "accounts" table.
-//     log.Printf("Deleting rows with IDs %s and %s...", one, two)
-//     if _, err := tx.Exec(ctx,
-//         "DELETE FROM accounts WHERE id IN ($1, $2)", one, two); err != nil {
-//         return err
-//     }
-//     return nil
-// }

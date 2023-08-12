@@ -10,3 +10,14 @@ type Users struct {
 	Picture       string `json:"picture"`
 	Locale        string `json:"locale"`
 }
+
+type Book struct {
+	ID      string  `json:"id"`
+	Title   string  `json:"title"`
+	Author  string  `json:"author"`
+	Pages   string  `json:"pages"`
+	Picture string  `json:"picture"`
+	Prices  float64 `json:"prices"`
+	Status  string  `json:"status"`
+	UserID  string  `json:"user_id"`
+}
