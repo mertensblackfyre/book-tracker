@@ -1,9 +1,9 @@
 const withMT = require("@material-tailwind/html/utils/withMT");
 
 module.exports = withMT({
-   content: ["./**/*.{html,js}"],
+   content: ["./index.html,", "./login.html"],
    theme: {
       extend: {},
    },
-   plugins: [],
+   plugins: [require("daisyui")],
 });
