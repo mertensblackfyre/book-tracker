@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"html/template"
 	"log"
 	"net/http"
 
@@ -13,7 +12,6 @@ import (
 	"github.com/server/pkg/handlers"
 )
 
-var tmpl *template.Template
 
 func main() {
 	// Read in connection string
@@ -24,16 +22,6 @@ func main() {
 	handlers.InitSessions()
 	// r.Use(handlers.Authenticate)
 	r.Use(middleware.Logger)
-
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl = template.Must(template.ParseFiles("./static/index.html"))
-		tmpl.Execute(w, nil)
-	})
-
-	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
-		tmpl = template.Must(template.ParseFiles("./static/login.html"))
-		tmpl.Execute(w, nil)
-	})
 
 	// Auth
 	r.Get("/auth/google", handlers.GoogleLogin)
