@@ -55,14 +55,14 @@ func main() {
 
 	// Books
 
-	// // Set up table
-	err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-		return handlers.CreateTables(context.Background(), tx)
-	})
+	// // // Set up table
+	// err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+	// 	return handlers.CreateTables(context.Background(), tx)
+	// })
 
-	if err != nil {
-		log.Fatalln(err)
-	}
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
 
 	http.ListenAndServe(":5000", handlers.Manager.LoadAndSave(r))
 	defer conn.Close(context.Background())
