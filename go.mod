@@ -7,7 +7,7 @@ require (
 	golang.org/x/oauth2 v0.10.0
 )
 
-require github.com/alexedwards/scs/v2 v2.5.1 // indirect
+require github.com/alexedwards/scs/v2 v2.5.1
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
