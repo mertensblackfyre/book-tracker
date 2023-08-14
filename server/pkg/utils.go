@@ -3,20 +3,19 @@ package pkg
 import (
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/joho/godotenv"
 )
 
 func GetEnv(key string) string {
-	ex, err := os.Executable()
+	// ex, err := os.Executable()
 
-	if err != nil {
-		log.Fatalln(err)
-	}
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
 	// load .env file
 
-	err = godotenv.Load(filepath.Dir(ex) + "/.env")
+	err := godotenv.Load("./.env")
 
 	if err != nil {
 		log.Fatalln(err)

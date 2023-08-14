@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"html/template"
 	"log"
 	"net/http"
 
@@ -12,8 +11,6 @@ import (
 	pgx "github.com/jackc/pgx/v5"
 	"github.com/server/pkg"
 )
-
-var tmpl *template.Template
 
 func main() {
 	// Read in connection string
@@ -25,15 +22,6 @@ func main() {
 	// r.Use(handlers.Authenticate)
 	r.Use(middleware.Logger)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl = template.Must(template.ParseFiles("./static/index.html"))
-		tmpl.Execute(w, nil)
-	})
-
-	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
-		tmpl = template.Must(template.ParseFiles("./static/login.html"))
-		tmpl.Execute(w, nil)
-	})
 	// Auth
 	r.Get("/auth/google", pkg.GoogleLogin)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
@@ -53,17 +41,26 @@ func main() {
 	})
 
 	// Books
+	r.Get("/books", func(w http.ResponseWriter, r *http.Request) {
+		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+			return pkg.GetAllBooks(conn)
+		})
 
-	// // // Set up table
-	err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-		return pkg.CreateTables(context.Background(), tx)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	})
 
-	if err != nil {
-		log.Fatalln(err)
-	}
+	// Set up table
+	// err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+	// 	return pkg.CreateTables(context.Background(), tx)
+	// })
 
-	http.ListenAndServe(":8000", pkg.Manager.LoadAndSave(r))
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+
+	http.ListenAndServe(":5000", pkg.Manager.LoadAndSave(r))
 	defer conn.Close(context.Background())
 
 }

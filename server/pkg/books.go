@@ -25,7 +25,27 @@ func AddBook(ctx context.Context, tx pgx.Tx, data []byte) error {
 	return nil
 }
 
-func GetAllBooks() {}
+func GetAllBooks(conn *pgx.Conn) error {
+	rows, err := conn.Query(context.Background(), "SELECT id, title, author,user_id FROM books;")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		var id int
+		var user_id string
+		var author string
+		var title string
+		if err := rows.Scan(&id, &title, &author, &user_id); err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("%d: %s\n -> %s", id, title, user_id)
+	}
+
+	return nil
+}
 
 func FilterBooks() {}
 
