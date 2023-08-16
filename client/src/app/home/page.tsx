@@ -12,10 +12,10 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@radix-ui/react-menubar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
 
-export const metadata: Metadata = {
-   title: "Music App",
-   description: "Example music app using the components.",
-};
+// export const metadata: Metadata = {
+//    title: "Music App",
+//    description: "Example music app using the components.",
+// };
 
 export default function MusicPage() {
    return (
