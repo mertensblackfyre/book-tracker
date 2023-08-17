@@ -8,7 +8,7 @@ import (
 	pgx "github.com/jackc/pgx/v5"
 )
 
-func AddUser(ctx context.Context, tx pgx.Tx, data []byte) error {
+func AddUser( tx pgx.Tx, data []byte) error {
 	var user Users
 
 	err := json.Unmarshal([]byte(data), &user)
@@ -17,14 +17,14 @@ func AddUser(ctx context.Context, tx pgx.Tx, data []byte) error {
 		return err
 	}
 
-	if _, err := tx.Exec(ctx,
+	if _, err := tx.Exec(context.Background(),
 		"INSERT INTO users (email ,name ,picture,verified_email,created_at) VALUES ($1, $2, $3, $4, NOW())", user.Email, user.Name, user.Picture, user.VerifiedEmail); err != nil {
 		log.Println(err)
 		return err
 	}
 
 	// Store a new key and value in the session data.
-	Manager.Put(ctx, "name", user.Email)
+	Manager.Put(context.Background(), "name", user.Email)
 
 	return nil
 }

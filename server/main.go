@@ -24,7 +24,17 @@ func main() {
 
 	// Auth
 	r.Get("/auth/google", pkg.GoogleLogin)
-	r.Get("/auth/callback", pkg.GoogleCallBack)
+	r.Get("/auth/callback", func(w http.ResponseWriter, r *http.Request) {
+		data := pkg.GoogleCallBack(w, r)
+
+		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+			return pkg.AddUser(tx, data)
+		})
+
+		if err != nil {
+			return
+		}
+	})
 	r.Get("/logout", func(w http.ResponseWriter, r *http.Request) {
 		pkg.Logout(w, r)
 	})
