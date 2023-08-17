@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 
+	crdbpgx "github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgxv5"
+	pgx "github.com/jackc/pgx/v5"
 )
 
 const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
@@ -19,20 +21,19 @@ func GoogleLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
-func GoogleCallBack(w http.ResponseWriter, r *http.Request)[]byte {
-
+func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 
 	state := r.URL.Query()["state"][0]
+	conn := DBConfig()
 
 	if state != "ran" {
 		fmt.Fprintln(w, "States dont match")
-		return nil
 	}
 
 	code := r.URL.Query()["code"][0]
-    if len(code) == 0{
-        log.Fatalln("Code is 0")
-    }
+	if len(code) == 0 {
+		log.Fatalln("Code is 0")
+	}
 
 	token, err := GoogleAuthConfig().Exchange(context.Background(), code)
 
@@ -48,13 +49,19 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request)[]byte {
 
 	data, err := ioutil.ReadAll(response.Body)
 
-
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
 
-    http.Redirect(w,r,"/",200)
-    return data
+	fmt.Fprintln(w, string(data))
+	// Store a new key and value in the session data.
+
+
+	err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		return AddUser(tx, data)
+	})
+
+	http.Redirect(w, r, "/", 200)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) error {

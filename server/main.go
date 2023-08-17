@@ -24,17 +24,8 @@ func main() {
 
 	// Auth
 	r.Get("/auth/google", pkg.GoogleLogin)
-	r.Get("/auth/callback", func(w http.ResponseWriter, r *http.Request) {
-		data := pkg.GoogleCallBack(w, r)
+	r.Get("/auth/callback", pkg.GoogleCallBack)
 
-		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			return pkg.AddUser(tx, data)
-		})
-
-		if err != nil {
-			return
-		}
-	})
 	r.Get("/logout", func(w http.ResponseWriter, r *http.Request) {
 		pkg.Logout(w, r)
 	})
@@ -54,6 +45,17 @@ func main() {
 	r.Get("/books", func(w http.ResponseWriter, r *http.Request) {
 		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 			return pkg.GetAllBooks(conn)
+		})
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+	})
+
+	r.Get("/add-book", func(w http.ResponseWriter, r *http.Request) {
+		data := []byte("Hello")
+		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+			return pkg.AddBook(context.Background(), pgx, data)
 		})
 
 		if err != nil {

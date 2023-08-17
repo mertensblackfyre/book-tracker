@@ -10,6 +10,7 @@ import (
 
 func AddBook(ctx context.Context, tx pgx.Tx, data []byte) error {
 	var b Book
+
 	err := json.Unmarshal([]byte(data), &b)
 	if err != nil {
 		log.Println(err)
