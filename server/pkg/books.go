@@ -8,7 +8,7 @@ import (
 	pgx "github.com/jackc/pgx/v5"
 )
 
-func AddBook(ctx context.Context, tx pgx.Tx, data []byte) error {
+func AddBook(tx pgx.Tx, data []byte) error {
 	var b Book
 
 	err := json.Unmarshal([]byte(data), &b)
@@ -17,11 +17,13 @@ func AddBook(ctx context.Context, tx pgx.Tx, data []byte) error {
 		return err
 	}
 
-	if _, err := tx.Exec(ctx,
-		"INSERT INTO users (title ,author ,status,pages,prices,picture,user_id,created_at) VALUES ($1, $2, $3, $4,$5,$6,$7, NOW())", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, b.UserID); err != nil {
+	if _, err := tx.Exec(context.Background(),
+		"INSERT INTO books (title ,author ,status,pages,price,picture,user_id,created_at) VALUES ($1, $2, $3, $4,$5,$6,$7, NOW())", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, b.UserID); err != nil {
 		log.Println(err)
 		return err
 	}
+
+	log.Printf("%s has been added", b.Title)
 
 	return nil
 }
@@ -50,6 +52,14 @@ func GetAllBooks(conn *pgx.Conn) error {
 
 func FilterBooks() {}
 
-func DeleteBook() {}
+func DeleteBook(ctx context.Context, tx pgx.Tx) {
+	// Delete two rows into the "accounts" table.
+	log.Printf("Deleting rows with IDs %s and %s...", one, two)
+	if _, err := tx.Exec(ctx,
+		"DELETE FROM accounts WHERE id IN ($1, $2)", one, two); err != nil {
+		return err
+	}
+	return nil
+}
 
 func UpdateBookStatus() {}

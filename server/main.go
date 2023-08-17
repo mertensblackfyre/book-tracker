@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -52,15 +53,27 @@ func main() {
 		}
 	})
 
-	r.Get("/add-book", func(w http.ResponseWriter, r *http.Request) {
-		data := []byte("Hello")
+	r.HandleFunc("/add-book", func(w http.ResponseWriter, r *http.Request) {
+
+		data := []byte(`{
+  			"title": "The Great Gatsby",
+  			"author": "F. Scott Fitzgerald",
+  			"pages": "224",
+  			"picture": "https://example.com/great_gatsby.jpg", 
+  			"price": 10.99,
+  			"status": "published",
+  			"user_id": "892076584733999105"
+			}`)
+
 		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			return pkg.AddBook(context.Background(), pgx, data)
+			return pkg.AddBook(tx, data)
 		})
 
 		if err != nil {
 			log.Fatalln(err)
 		}
+
+		fmt.Fprintf(w, string(data), 200)
 	})
 
 	// Set up table
