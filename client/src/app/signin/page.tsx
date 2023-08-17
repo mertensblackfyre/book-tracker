@@ -21,6 +21,7 @@ const LoginPage = () => {
              <Card className=" w-96 shadow-lg rounded px-8 pt-6 pb-8">
                 <CardHeader className="space-y-1">
                    <CardTitle className="text-2xl">Create an account here to manage your books easily</CardTitle>
+                   <span>&nbsp;&nbsp;</span>
                    <CardDescription>
                       Enter your email below to create your account
                    </CardDescription>
