@@ -50,15 +50,28 @@ func GetAllBooks(conn *pgx.Conn) error {
 	return nil
 }
 
-func FilterBooks(ctx context.Context, tx pgx.Tx, status string, user_id string) Book {
-	var b Book
+func FilterBooks(conn *pgx.Conn, ctx context.Context, tx pgx.Tx, status string, user_id int) []Book {
 
-	if err := tx.QueryRow(ctx,
-		"SELECT * FROM books WHERE status = $1 AND user_id = $2", status, user_id).Scan(&b); err != nil {
-		log.Fatalln("Book not found")
+	var books []Book
+	rows, err := conn.Query(ctx, "SELECT id, title, author, status ,picture, price FROM books WHERE status = $1 AND user_id = $2", status, user_id)
+
+	if err != nil {
+		log.Println(err)
 	}
 
-	return b
+	defer rows.Close()
+
+	for rows.Next() {
+		var book Book
+		if err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Status, &book.Picture, &book.Prices); err != nil {
+			log.Fatal(err)
+		}
+		books = append(books, book)
+	}
+
+	log.Printf("Found %d books", len(books))
+
+	return books
 }
 
 func DeleteBook(ctx context.Context, tx pgx.Tx, id string) error {
@@ -73,3 +86,5 @@ func DeleteBook(ctx context.Context, tx pgx.Tx, id string) error {
 }
 
 func UpdateBookStatus() {}
+
+func GetUsersBook() {}

@@ -1,7 +1,7 @@
 package pkg
 
 type Users struct {
-	ID            string `json:"id"`
+	ID            int    `json:"id"`
 	Email         string `json:"email"`
 	VerifiedEmail bool   `json:"verified_email"`
 	Name          string `json:"name"`
@@ -12,14 +12,14 @@ type Users struct {
 }
 
 type Book struct {
-	ID      int8    `json:"id"`
+	ID      int     `json:"id"`
 	Title   string  `json:"title"`
 	Author  string  `json:"author"`
-	Pages   string  `json:"pages"`
+	Pages   int     `json:"pages"`
 	Picture string  `json:"picture"`
 	Prices  float64 `json:"prices"`
 	Status  string  `json:"status"`
-	UserID  string  `json:"user_id"`
+	UserID  int     `json:"user_id"`
 }
 
 // Error implements error.

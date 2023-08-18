@@ -4,8 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 
 	crdbpgx "github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgxv5"
 	"github.com/go-chi/chi/v5"
@@ -13,6 +16,23 @@ import (
 	pgx "github.com/jackc/pgx/v5"
 	"github.com/server/pkg"
 )
+
+func JSONStruct(file string) []pkg.Book {
+	// Open JSON file
+	jsonFile, err := os.Open(file)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Read opened xmlFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var b []pkg.Book
+	err = json.Unmarshal(byteValue, &b)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return b
+}
 
 func main() {
 	// Read in connection string
@@ -48,17 +68,16 @@ func main() {
 	// Books
 	r.Get("/mybooks/{status}-{user_id}", func(w http.ResponseWriter, r *http.Request) {
 		status := chi.URLParam(r, "status")
-		user_id := chi.URLParam(r, "user_id")
-		var data pkg.Book
+		user_id, err := strconv.Atoi(chi.URLParam(r, "user_id"))
+		if err != nil {
+			log.Println(err)
+		}
+		var data []pkg.Book
 
-		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			data = pkg.FilterBooks(context.Background(), tx, status, user_id)
+		err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+			data = pkg.FilterBooks(conn, context.Background(), tx, status, user_id)
 			return nil
 		})
-
-		if err != nil {
-			log.Fatalln(err)
-		}
 
 		if err != nil {
 			log.Fatalln(err)
@@ -74,7 +93,7 @@ func main() {
 		w.Write(d)
 	})
 
-	r.Get("/mybooks", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/books", func(w http.ResponseWriter, r *http.Request) {
 		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 			return pkg.GetAllBooks(conn)
 		})
@@ -86,25 +105,21 @@ func main() {
 
 	r.HandleFunc("/add-book", func(w http.ResponseWriter, r *http.Request) {
 
-		data := []byte(`{
-  			"title": "The Great Gatsby",
-  			"author": "F. Scott Fitzgerald",
-  			"pages": "224",
-  			"picture": "https://example.com/great_gatsby.jpg", 
-  			"price": 10.99,
-  			"status": "published",
-  			"user_id": "892076584733999105"
-			}`)
+		data := JSONStruct("MOCK_DATA.json")
 
-		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			return pkg.AddBook(tx, data)
-		})
+		for i := 0; i < 50; i++ {
+			d, err := json.Marshal(data[i])
+			err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+				return pkg.AddBook(tx, d)
+			})
 
-		if err != nil {
-			log.Fatalln(err)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			fmt.Fprintf(w, string(d), 200)
+
 		}
-
-		fmt.Fprintf(w, string(data), 200)
 	})
 
 	r.HandleFunc("/delete-book/{id}", func(w http.ResponseWriter, r *http.Request) {
