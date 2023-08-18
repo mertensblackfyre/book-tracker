@@ -50,15 +50,25 @@ func GetAllBooks(conn *pgx.Conn) error {
 	return nil
 }
 
-func FilterBooks() {}
+func FilterBooks(ctx context.Context, tx pgx.Tx, status string, user_id string) Book {
+	var b Book
 
-func DeleteBook(ctx context.Context, tx pgx.Tx) {
-	// Delete two rows into the "accounts" table.
-	log.Printf("Deleting rows with IDs %s and %s...", one, two)
+	if err := tx.QueryRow(ctx,
+		"SELECT * FROM books WHERE status = $1 AND user_id = $2", status, user_id).Scan(&b); err != nil {
+		log.Fatalln("Book not found")
+	}
+
+	return b
+}
+
+func DeleteBook(ctx context.Context, tx pgx.Tx, id string) error {
+	log.Printf("Deleting book with IDs %s", id)
 	if _, err := tx.Exec(ctx,
-		"DELETE FROM accounts WHERE id IN ($1, $2)", one, two); err != nil {
+		"DELETE FROM books WHERE id IN ($1)", id); err != nil {
 		return err
 	}
+
+	log.Printf("Deleted book with IDs %s", id)
 	return nil
 }
 
