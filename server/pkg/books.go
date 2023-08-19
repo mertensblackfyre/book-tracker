@@ -85,6 +85,37 @@ func DeleteBook(ctx context.Context, tx pgx.Tx, id string) error {
 	return nil
 }
 
-func UpdateBookStatus() {}
+func UpdateBookStatus(ctx context.Context, tx pgx.Tx, book_id int, status string) error {
 
-func GetUsersBook() {}
+	log.Println("Updating status")
+	if _, err := tx.Exec(ctx,
+		"UPDATE books SET status = $1 WHERE id = $2", status, book_id); err != nil {
+		return err
+	}
+
+	log.Println("Updated status")
+	return nil
+}
+
+func GetUsersBooks(conn *pgx.Conn, ctx context.Context, tx pgx.Tx, user_id int) []Book {
+	var books []Book
+	rows, err := conn.Query(ctx, "SELECT id, title, author, status ,picture, price FROM books WHERE user_id = $1", user_id)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var book Book
+		if err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Status, &book.Picture, &book.Prices); err != nil {
+			log.Fatal(err)
+		}
+		books = append(books, book)
+	}
+
+	log.Printf("Found %d books", len(books))
+
+	return books
+}

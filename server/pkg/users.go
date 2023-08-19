@@ -8,6 +8,17 @@ import (
 	pgx "github.com/jackc/pgx/v5"
 )
 
+func DeleteUser(ctx context.Context, tx pgx.Tx, id string) error {
+	log.Printf("Deleting user with IDs %s", id)
+	if _, err := tx.Exec(ctx,
+		"DELETE FROM users WHERE id IN ($1)", id); err != nil {
+		return err
+	}
+
+	log.Printf("Deleted user with IDs %s", id)
+	return nil
+}
+
 func AddUser(tx pgx.Tx, data []byte) error {
 	var user Users
 

@@ -93,6 +93,33 @@ func main() {
 		w.Write(d)
 	})
 
+	// Books
+	r.Get("/mybooks/{user_id}", func(w http.ResponseWriter, r *http.Request) {
+		user_id, err := strconv.Atoi(chi.URLParam(r, "user_id"))
+		if err != nil {
+			log.Println(err)
+		}
+		var data []pkg.Book
+
+		err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+			data = pkg.GetUsersBooks(conn, context.Background(), tx, user_id)
+			return nil
+		})
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		// Encode struct to JSON
+		d, err := json.Marshal(data)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(d)
+	})
+
 	r.Get("/books", func(w http.ResponseWriter, r *http.Request) {
 		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 			return pkg.GetAllBooks(conn)
@@ -120,6 +147,24 @@ func main() {
 			fmt.Fprintf(w, string(d), 200)
 
 		}
+	})
+
+	r.HandleFunc("/update/{id}", func(w http.ResponseWriter, r *http.Request) {
+
+		status := chi.URLParam(r, "status")
+		book_id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			log.Println(err)
+		}
+
+		err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+			return pkg.UpdateBookStatus(context.Background(), tx, book_id, status)
+		})
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
 	})
 
 	r.HandleFunc("/delete-book/{id}", func(w http.ResponseWriter, r *http.Request) {
