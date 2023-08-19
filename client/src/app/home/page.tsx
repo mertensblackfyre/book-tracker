@@ -9,9 +9,14 @@ export default function HomePage() {
          <Container>
             <section className="my-[30px]">
                <header className="mb-[25px]">
-                  <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                     Top Rated
-                  </h2>
+                  <div className="space-y-1">
+                     <h2 className="text-2xl font-semibold tracking-tight">
+                        Listen Now
+                     </h2>
+                     <p className="text-sm text-muted-foreground">
+                        Top picks for you. Updated daily.
+                     </p>
+                  </div>
                </header>
                <div className="flex  flex-row">
                   <BookCard />
@@ -22,9 +27,14 @@ export default function HomePage() {
 
             <section className="my-[30px]">
                <header className="mb-[25px]">
-                  <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                     New
-                  </h2>
+                  <div className="space-y-1">
+                     <h2 className="text-2xl font-semibold tracking-tight">
+                        Listen Now
+                     </h2>
+                     <p className="text-sm text-muted-foreground">
+                        Top picks for you. Updated daily.
+                     </p>
+                  </div>
                </header>
                <div className="flex  flex-row">
                   <BookCard />
