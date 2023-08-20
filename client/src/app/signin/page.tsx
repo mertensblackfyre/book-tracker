@@ -1,20 +1,30 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-   Card,
-   CardHeader,
-   CardTitle,
-   CardDescription,
-   CardContent,
-   CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Icons } from "@/components/ui/icons";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import React from "react";
+import axios from "axios";
+import { API_URL } from "@/api/url";
 
 const LoginPage = () => {
+   const registerUser = async () => {
+      console.log("Hello World 1:");
+      try {
+         const response = await axios.get(`${API_URL}/auth/google`);
+
+         console.log("Hello World 2");
+         if (response.status === 200) {
+            localStorage.setItem("user", JSON.stringify(response.data));
+            window.location.href = "/dashboard";
+         }
+
+         return response.data;
+      } catch (error: any) {
+         console.log(error);
+      }
+   };
+
    return (
       <>
          <div className="flex items-center justify-center h-screen">
@@ -22,38 +32,24 @@ const LoginPage = () => {
                <CardHeader className="space-y-3">
                   <CardTitle className="text-2xl">Create an account</CardTitle>
                   <span>&nbsp;&nbsp;</span>
-
-                  <div className="grid gap-2 my-2">
-                     <Label htmlFor="email">Email</Label>
-                     <Input
-                        id="email"
-                        type="email"
-                        placeholder="m@example.com"
-                     />
-                  </div>
-                  <div className="grid gap-2 my-2">
-                     <Label htmlFor="password">Password</Label>
-                     <Input id="password" type="password" />
-                  </div>
-                  <Button className="w-full">Create account</Button>
                </CardHeader>
-               <CardContent className="grid gap-4">
-                  <div className="relative">
-                     <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t" />
-                     </div>
-                     <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">
-                           Or continue with
-                        </span>
-                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-6"></div>
-               </CardContent>
-               <CardFooter className="items-center justify-center">
-                  <Button variant="outline">
+
+               <CardFooter className="items-center justify-center flex flex-col">
+                  <Button
+                     className="my-2"
+                     variant="outline"
+                     onClick={registerUser}
+                  >
                      <Icons.google className="mr-2 h-4 w-4" />
-                     Google Authentication
+                     Google
+                  </Button>
+                  <Button
+                     className="my-2"
+                     variant="outline"
+                     onClick={registerUser}
+                  >
+                     <Icons.gitHub className="mr-2 h-4 w-4" />
+                     Github
                   </Button>
                </CardFooter>
             </Card>

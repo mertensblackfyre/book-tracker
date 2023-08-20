@@ -13,6 +13,8 @@ import (
 	crdbpgx "github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgxv5"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+
 	pgx "github.com/jackc/pgx/v5"
 	"github.com/server/pkg"
 )
@@ -45,6 +47,13 @@ func main() {
 	pkg.InitSessions()
 	// r.Use(handlers.Authenticate)
 	r.Use(middleware.Logger)
+
+	// Basic CORS
+	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"https://*", "http://*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+	}))
 
 	// Auth
 	r.Get("/auth/google", pkg.GoogleLogin)
@@ -130,7 +139,7 @@ func main() {
 		}
 	})
 
-	r.HandleFunc("/add-book", func(w http.ResponseWriter, r *http.Request) {
+	r.Post("/add-book", func(w http.ResponseWriter, r *http.Request) {
 
 		data := JSONStruct("MOCK_DATA.json")
 
@@ -149,7 +158,7 @@ func main() {
 		}
 	})
 
-	r.HandleFunc("/update/{id}", func(w http.ResponseWriter, r *http.Request) {
+	r.Put("/update/{id}", func(w http.ResponseWriter, r *http.Request) {
 
 		status := chi.URLParam(r, "status")
 		book_id, err := strconv.Atoi(chi.URLParam(r, "id"))
@@ -167,7 +176,7 @@ func main() {
 
 	})
 
-	r.HandleFunc("/delete-book/{id}", func(w http.ResponseWriter, r *http.Request) {
+	r.Delete("/delete-book/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 			return pkg.DeleteBook(context.Background(), tx, id)
