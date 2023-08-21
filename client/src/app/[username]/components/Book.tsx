@@ -5,10 +5,11 @@ const Book : FC<{data: BookDetails}> = ({data}) => {
     return (
         <div>
             <Card className="shadow-lg rounded px-8 pt-6 pb-8">
+                <img src={data.coverImgUrl} className="card-imp-top" alt="..." />
                 <CardHeader className="space-y-1">
                     <CardTitle className="text-2xl">{data.title}</CardTitle>
                     <CardDescription>
-                        By: {data.author} 
+                        By: {data.author}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
