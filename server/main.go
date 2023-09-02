@@ -38,12 +38,10 @@ func JSONStruct(file string) []pkg.Book {
 
 func main() {
 	// Read in connection string
-
 	conn := pkg.DBConfig()
 	r := chi.NewRouter()
 
 	// Enable all methods by default
-
 	pkg.InitSessions()
 	// r.Use(handlers.Authenticate)
 	r.Use(middleware.Logger)
@@ -51,7 +49,8 @@ func main() {
 	// Basic CORS
 	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"https://*", "http://*"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedOrigins: []string{"http://localhost:3000"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	}))
 
