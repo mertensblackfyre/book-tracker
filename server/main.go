@@ -1,21 +1,18 @@
 package main
 
 import (
-	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 
-	crdbpgx "github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgxv5"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
-
-	pgx "github.com/jackc/pgx/v5"
 	"github.com/server/pkg"
 )
 
@@ -37,22 +34,32 @@ func JSONStruct(file string) []pkg.Book {
 }
 
 func main() {
-	// Read in connection string
-	conn := pkg.DBConfig()
 	r := chi.NewRouter()
 
-	// Enable all methods by default
+	db, err := sql.Open("sqlite3", "database.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	q := pkg.NewDB(db)
+	q.Drop()
+	q.Migrate()
+
 	pkg.InitSessions()
 	// r.Use(handlers.Authenticate)
 	r.Use(middleware.Logger)
 
-	// Basic CORS
-	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
+	tmpl := template.Must(template.ParseGlob("static/*"))
+
 	r.Use(cors.Handler(cors.Options{
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		AllowedOrigins: []string{"http://localhost:3000"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		//	AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	}))
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "index.html", nil)
+	})
 
 	// Auth
 	r.Get("/auth/google", pkg.GoogleLogin)
@@ -62,140 +69,8 @@ func main() {
 		pkg.Logout(w, r)
 	})
 
-	// Users
-	r.Get("/users", func(w http.ResponseWriter, r *http.Request) {
-		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			return pkg.PrintAllUsers(conn)
-		})
-
-		if err != nil {
-			log.Fatalln(err)
-		}
-	})
-
-	// Books
-	r.Get("/mybooks/{status}-{user_id}", func(w http.ResponseWriter, r *http.Request) {
-		status := chi.URLParam(r, "status")
-		user_id, err := strconv.Atoi(chi.URLParam(r, "user_id"))
-		if err != nil {
-			log.Println(err)
-		}
-		var data []pkg.Book
-
-		err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			data = pkg.FilterBooks(conn, context.Background(), tx, status, user_id)
-			return nil
-		})
-
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		// Encode struct to JSON
-		d, err := json.Marshal(data)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(d)
-	})
-
-	// Books
-	r.Get("/mybooks/{user_id}", func(w http.ResponseWriter, r *http.Request) {
-		user_id, err := strconv.Atoi(chi.URLParam(r, "user_id"))
-		if err != nil {
-			log.Println(err)
-		}
-		var data []pkg.Book
-
-		err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			data = pkg.GetUsersBooks(conn, context.Background(), tx, user_id)
-			return nil
-		})
-
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		// Encode struct to JSON
-		d, err := json.Marshal(data)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(d)
-	})
-
-	r.Get("/books", func(w http.ResponseWriter, r *http.Request) {
-		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			return pkg.GetAllBooks(conn)
-		})
-
-		if err != nil {
-			log.Fatalln(err)
-		}
-	})
-
-	r.Post("/add-book", func(w http.ResponseWriter, r *http.Request) {
-
-		data := JSONStruct("MOCK_DATA.json")
-
-		for i := 0; i < 50; i++ {
-			d, err := json.Marshal(data[i])
-			err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-				return pkg.AddBook(tx, d)
-			})
-
-			if err != nil {
-				log.Fatalln(err)
-			}
-
-			fmt.Fprintf(w, string(d), 200)
-
-		}
-	})
-
-	r.Put("/update/{id}", func(w http.ResponseWriter, r *http.Request) {
-
-		status := chi.URLParam(r, "status")
-		book_id, err := strconv.Atoi(chi.URLParam(r, "id"))
-		if err != nil {
-			log.Println(err)
-		}
-
-		err = crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			return pkg.UpdateBookStatus(context.Background(), tx, book_id, status)
-		})
-
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-	})
-
-	r.Delete("/delete-book/{id}", func(w http.ResponseWriter, r *http.Request) {
-		id := chi.URLParam(r, "id")
-		err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-			return pkg.DeleteBook(context.Background(), tx, id)
-		})
-
-		if err != nil {
-			log.Fatalln(err)
-		}
-	})
-
-	// Set up table
-	// err := crdbpgx.ExecuteTx(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-	// 	return pkg.CreateTables(context.Background(), tx)
-	// })
-
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
+	r.Get("/all/users", pkg.Han(q.AllUsers))
 
 	http.ListenAndServe(":5000", pkg.Manager.LoadAndSave(r))
-	defer conn.Close(context.Background())
 
 }

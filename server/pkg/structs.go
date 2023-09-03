@@ -1,7 +1,7 @@
 package pkg
 
 type Users struct {
-	ID            int    `json:"id"`
+	ID            string    `json:"id"`
 	Email         string `json:"email"`
 	VerifiedEmail bool   `json:"verified_email"`
 	Name          string `json:"name"`
@@ -22,7 +22,3 @@ type Book struct {
 	UserID  int     `json:"user_id"`
 }
 
-// Error implements error.
-func (Book) Error() string {
-	panic("unimplemented")
-}

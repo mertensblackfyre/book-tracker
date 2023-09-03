@@ -1,77 +1,81 @@
 package pkg
 
 import (
-	"context"
+	"database/sql"
 	"log"
-
-	pgx "github.com/jackc/pgx/v5"
 )
 
-func DBConfig() *pgx.Conn {
-
-	config, err := pgx.ParseConfig(GetEnv("DATABASE_URL"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	config.RuntimeParams["application_name"] = "$ docs_simplecrud_gopgx"
-	conn, err := pgx.ConnectConfig(context.Background(), config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return conn
-
+type DB struct {
+	db *sql.DB
 }
-func CreateTables(ctx context.Context, tx pgx.Tx) error {
-	// Dropping existing table if it exists
-	log.Println("Drop existing accounts table if necessary.")
-	if _, err := tx.Exec(ctx, "DROP TABLE IF EXISTS books"); err != nil {
-		return err
+
+func NewDB(db *sql.DB) *DB {
+	return &DB{
+		db: db,
+	}
+}
+
+func (r *DB) Drop() error {
+
+	// Drop users table
+	query := "DROP TABLE IF EXISTS users;"
+
+	// Drop books table
+	query1 := "DROP TABLE IF EXISTS books;"
+
+	_, err := r.db.Exec(query)
+
+	if err != nil {
+		log.Fatalln(err)
 	}
 
-	log.Println("Drop existing accounts table if necessary.")
-	if _, err := tx.Exec(ctx, "DROP TABLE IF EXISTS users"); err != nil {
-		return err
-	}
+	_, err = r.db.Exec(query1)
 
-	// Create the users table
-	log.Println("Creating users table...")
-	if _, err := tx.Exec(ctx,
-		`CREATE TABLE users (
-  		id SERIAL PRIMARY KEY,
-  		email TEXT,
-  		name TEXT,
-  		picture TEXT,
-  		verified_email BOOLEAN,
-  		created_at TIMESTAMP
-);
-`); err != nil {
-		return err
-	}
-
-	log.Println("Creating books table...")
-	if _, err := tx.Exec(ctx,
-		`CREATE TABLE books (
-  id SERIAL PRIMARY KEY,
-  title TEXT,
-  author TEXT,
-  user_id INTEGER,
-  status TEXT,
-  price REAL,
-  picture TEXT,
-  pages INT,
-  created_at TIMESTAMP
-);
-
-`); err != nil {
-		return err
-	}
-
-	log.Println("Creating foreign key...")
-	if _, err := tx.Exec(ctx,
-		`ALTER TABLE "books" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");`); err != nil {
-		return err
+	if err != nil {
+		log.Fatalln(err)
 	}
 	return nil
 }
+
+func (r *DB) Migrate() error {
+
+	// users table
+	query := `CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            email TEXT,
+            name TEXT,
+            picture TEXT,
+            verified_email BOOLEAN,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+         );`
+
+	// books table
+	query1 := `CREATE TABLE IF NOT EXISTS books (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            author TEXT, 
+            user_id INTEGER,
+            status TEXT,
+            price REAL,
+            picture TEXT,
+            pages INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+        );`
+
+	_, err := r.db.Exec(query)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	_, err = r.db.Exec(query1)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return err
+}
+
+//ALTER TABLE "books" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");

@@ -9,6 +9,8 @@ require (
 
 require github.com/alexedwards/scs/v2 v2.5.1
 
+require github.com/mattn/go-sqlite3 v1.14.17 // indirect
+
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
@@ -21,7 +23,6 @@ require (
 require (
 	cloud.google.com/go/compute v1.20.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
-	github.com/cockroachdb/cockroach-go/v2 v2.3.5
 	github.com/go-chi/cors v1.2.1
 	github.com/golang/protobuf v1.5.3 // indirect
 	golang.org/x/net v0.12.0 // indirect

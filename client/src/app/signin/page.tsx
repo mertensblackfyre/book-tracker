@@ -21,7 +21,7 @@ const LoginPage = () => {
     const registerUser = async () => {
         console.log("Hello World 1:");
         try {
-            const response = await axios.get(`${API_URL}/auth/google`, config);
+            const response = await axios.get(`${API_URL}/books`, config);
 
             console.log("Hello World 2");
             if (response.status === 200) {

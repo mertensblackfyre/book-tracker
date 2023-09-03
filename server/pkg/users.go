@@ -1,81 +1,67 @@
 package pkg
 
 import (
-	"context"
 	"encoding/json"
+	"errors"
 	"log"
 
-	pgx "github.com/jackc/pgx/v5"
+	sqlite3 "github.com/mattn/go-sqlite3"
 )
 
-func DeleteUser(ctx context.Context, tx pgx.Tx, id string) error {
-	log.Printf("Deleting user with IDs %s", id)
-	if _, err := tx.Exec(ctx,
-		"DELETE FROM users WHERE id IN ($1)", id); err != nil {
-		return err
-	}
-
-	log.Printf("Deleted user with IDs %s", id)
-	return nil
-}
-
-func AddUser(tx pgx.Tx, data []byte) error {
+func (r *DB) AddUser(data string) error {
 	var user Users
 
 	err := json.Unmarshal([]byte(data), &user)
+
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
-	check := FindUser(context.Background(), tx, user.Email)
-
-	if check {
-		log.Printf("%s User exists", user.Email)
-		return nil
-	}
-
-	if _, err := tx.Exec(context.Background(),
-		"INSERT INTO users (email ,name ,picture,verified_email,created_at) VALUES ($1, $2, $3, $4, NOW())", user.Email, user.Name, user.Picture, user.VerifiedEmail); err != nil {
-		log.Println(err)
-		return err
-	}
-
-	return nil
-}
-
-func FindUser(ctx context.Context, tx pgx.Tx, email string) bool {
-	// Read the balance.
-	var e string
-
-	if err := tx.QueryRow(ctx,
-		"SELECT email FROM users WHERE email = $1", email).Scan(&e); err != nil {
-	}
-
-	if len(e) != 0 {
-		return true
-	}
-
-	return false
-}
-
-func PrintAllUsers(conn *pgx.Conn) error {
-	rows, err := conn.Query(context.Background(), "SELECT id, name, email FROM users;")
+	response, err := r.db.Exec("INSERT INTO users (email ,name ,picture,verified_email) VALUES (?, ?, ?, ?)", user.Email, user.Name, user.Picture, user.VerifiedEmail)
 
 	if err != nil {
-		log.Fatal(err)
-	}
 
-	defer rows.Close()
-	for rows.Next() {
-		var id int
-		var fullname string
-		var email string
-		if err := rows.Scan(&id, &fullname, &email); err != nil {
-			log.Fatal(err)
+		log.Println(err)
+		var sqliteErr sqlite3.Error
+		if errors.As(err, &sqliteErr) {
+			if errors.Is(sqliteErr.ExtendedCode, sqlite3.ErrConstraintUnique) {
+				log.Println(err)
+				return errors.New("Duplicate account")
+			}
 		}
-		log.Printf("%d: %s\n", id, fullname)
+		return err
 	}
 
+	if err != nil {
+		return err
+	}
+	id, err := response.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	log.Println(id)
+
 	return nil
+}
+
+func (r *DB) AllUsers() {
+
+	rows, err := r.db.Query("SELECT * FROM users")
+	if err != nil {
+		log.Println(err)
+	}
+	defer rows.Close()
+
+	var all []Users
+	for rows.Next() {
+		var users Users
+		if err := rows.Scan(&users.ID, &users.Name, &users.Email, &users.VerifiedEmail); err != nil {
+			log.Println(err)
+		}
+		all = append(all, users)
+	}
+
+	log.Println(all)
 }
