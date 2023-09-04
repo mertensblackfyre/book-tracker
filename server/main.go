@@ -2,12 +2,14 @@ package main
 
 import (
 	"database/sql"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 
 	"github.com/server/pkg"
 )
@@ -33,7 +35,7 @@ func main() {
 	r.Use(cors.Handler(cors.Options{
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		AllowedOrigins: []string{"http://localhost:3000"},
-		//	AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
 	}))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -52,8 +54,36 @@ func main() {
 	r.Get("/all/users", pkg.Han(q.AllUsers))
 
 	// Books
-	r.Get("/add/book", pkg.Han(q.AddBook))
+	r.Get("/add-book", pkg.Han(q.AddBook))
 	r.Get("/all/books", pkg.Han(q.GetAllBooks))
+	r.Get("/get-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			log.Println(err)
+		}
+		q.FilterBooks(chi.URLParam(r, "status"), id)
+	})
+	r.Delete("/delete-{id}", func(w http.ResponseWriter, r *http.Request) {
+		q.DeleteBook(chi.URLParam(r, "id"))
+	})
+	r.Put("/change-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
+
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			log.Println(err)
+		}
+
+		q.UpdateBookStatus(id, chi.URLParam(r, "status"))
+	})
+
+	r.Get("/my-book-{id}", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			log.Println(err)
+		}
+		q.GetUsersBooks(id)
+
+	})
 
 	http.ListenAndServe(":5000", pkg.Manager.LoadAndSave(r))
 }

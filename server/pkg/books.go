@@ -83,27 +83,36 @@ func (r *DB) FilterBooks(status string, user_id int) []Book {
 	return all
 }
 
-func DeleteBook(ctx context.Context, tx pgx.Tx, id string) error {
-	log.Printf("Deleting book with IDs %s", id)
-	if _, err := tx.Exec(ctx,
-		"DELETE FROM books WHERE id IN ($1)", id); err != nil {
-		return err
+func (r *DB) DeleteBook(id string) {
+
+	res, err := r.db.Exec("DELETE FROM websites WHERE id = ?", id)
+	if err != nil {
+		log.Println(err)
 	}
 
-	log.Printf("Deleted book with IDs %s", id)
-	return nil
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		log.Println(err)
+	}
+
+	if rowsAffected == 0 {
+		log.Println(err)
+	}
+
 }
 
-func UpdateBookStatus(ctx context.Context, tx pgx.Tx, book_id int, status string) error {
+func (r *DB) UpdateBookStatus(book_id int, status string) {
 
-	log.Println("Updating status")
-	if _, err := tx.Exec(ctx,
-		"UPDATE books SET status = $1 WHERE id = $2", status, book_id); err != nil {
-		return err
+	res, err := r.db.Exec("UPDATE books SET status = ?  WHERE id = ?", status, book_id)
+	if err != nil {
 	}
 
-	log.Println("Updated status")
-	return nil
+	if err != nil {
+        log.Println(err)
+	}
+
+    log.Println(res)
+
 }
 
 func (r *DB) GetUsersBooks(user_id int) []Book {
