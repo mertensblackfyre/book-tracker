@@ -16,8 +16,8 @@ func Handler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc 
 	}
 }
 
-func Han(v any) http.HandlerFunc {
+func Han(f func()) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		return
+		f()
 	}
 }

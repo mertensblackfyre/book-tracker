@@ -2,76 +2,85 @@ package pkg
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 
 	pgx "github.com/jackc/pgx/v5"
+	sqlite3 "github.com/mattn/go-sqlite3"
 )
 
-func AddBook(tx pgx.Tx, data []byte) error {
-	var b Book
+func (r *DB) AddBook() {
 
-	err := json.Unmarshal([]byte(data), &b)
-	if err != nil {
-		log.Println(err)
-		return err
+	b := JSONStruct("MOCK_DATA.json")
+
+	for i := 0; i < len(b); i++ {
+
+		fmt.Println(i)
+		response, err := r.db.Exec("INSERT INTO books (title ,author ,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b[i].Title, b[i].Author, b[i].Status, b[i].Pages, b[i].Prices, b[i].Picture, b[i].UserID)
+
+		if err != nil {
+
+			log.Println(err)
+			var sqliteErr sqlite3.Error
+			if errors.As(err, &sqliteErr) {
+				if errors.Is(sqliteErr.ExtendedCode, sqlite3.ErrConstraintUnique) {
+					log.Println(err)
+				}
+			}
+		}
+
+		if err != nil {
+			log.Println(err)
+		}
+		id, err := response.LastInsertId()
+		if err != nil {
+			log.Println(err)
+		}
+
+		log.Println(id)
+
 	}
-
-	if _, err := tx.Exec(context.Background(),
-		"INSERT INTO books (title ,author ,status,pages,price,picture,user_id,created_at) VALUES ($1, $2, $3, $4,$5,$6,$7, NOW())", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, b.UserID); err != nil {
-		log.Println(err)
-		return err
-	}
-
-	log.Printf("%s has been added", b.Title)
-
-	return nil
 }
 
-func GetAllBooks(conn *pgx.Conn) error {
-	rows, err := conn.Query(context.Background(), "SELECT id, title, author,user_id FROM books;")
+func (r *DB) GetAllBooks() {
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer rows.Close()
-	for rows.Next() {
-		var id int
-		var user_id string
-		var author string
-		var title string
-		if err := rows.Scan(&id, &title, &author, &user_id); err != nil {
-			log.Fatal(err)
-		}
-		log.Printf("%d: %s\n -> %s", id, title, user_id)
-	}
-
-	return nil
-}
-
-func FilterBooks(conn *pgx.Conn, ctx context.Context, tx pgx.Tx, status string, user_id int) []Book {
-
-	var books []Book
-	rows, err := conn.Query(ctx, "SELECT id, title, author, status ,picture, price FROM books WHERE status = $1 AND user_id = $2", status, user_id)
-
+	rows, err := r.db.Query("SELECT * FROM books")
 	if err != nil {
 		log.Println(err)
 	}
-
 	defer rows.Close()
 
+	var all []Book
 	for rows.Next() {
-		var book Book
-		if err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Status, &book.Picture, &book.Prices); err != nil {
-			log.Fatal(err)
+		var b Book
+		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Status, &b.Pages, &b.Prices, &b.Picture, &b.UserID, &b.Created_at); err != nil {
+			log.Println(err)
 		}
-		books = append(books, book)
+		all = append(all, b)
 	}
 
-	log.Printf("Found %d books", len(books))
+	log.Println(all)
+}
 
-	return books
+func (r *DB) FilterBooks(status string, user_id int) []Book {
+	rows, err := r.db.Query("SELECT * FROM books WHERE status = ? AND user_id = ?", status, user_id)
+	if err != nil {
+		log.Println(err)
+	}
+	defer rows.Close()
+
+	var all []Book
+	for rows.Next() {
+		var b Book
+		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Status, &b.Pages, &b.Prices, &b.Picture, &b.UserID, &b.Created_at); err != nil {
+			log.Println(err)
+		}
+		all = append(all, b)
+	}
+
+	log.Println(all)
+	return all
 }
 
 func DeleteBook(ctx context.Context, tx pgx.Tx, id string) error {
@@ -97,25 +106,24 @@ func UpdateBookStatus(ctx context.Context, tx pgx.Tx, book_id int, status string
 	return nil
 }
 
-func GetUsersBooks(conn *pgx.Conn, ctx context.Context, tx pgx.Tx, user_id int) []Book {
-	var books []Book
-	rows, err := conn.Query(ctx, "SELECT id, title, author, status ,picture, price FROM books WHERE user_id = $1", user_id)
+func (r *DB) GetUsersBooks(user_id int) []Book {
 
+	rows, err := r.db.Query("SELECT * FROM books WHERE user_id = ?", user_id)
 	if err != nil {
 		log.Println(err)
 	}
-
 	defer rows.Close()
 
+	var all []Book
 	for rows.Next() {
-		var book Book
-		if err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Status, &book.Picture, &book.Prices); err != nil {
-			log.Fatal(err)
+		var b Book
+		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Status, &b.Pages, &b.Prices, &b.Picture, &b.UserID, &b.Created_at); err != nil {
+			log.Println(err)
 		}
-		books = append(books, book)
+		all = append(all, b)
 	}
 
-	log.Printf("Found %d books", len(books))
+	log.Println(all)
+	return all
 
-	return books
 }

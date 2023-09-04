@@ -1,87 +1,22 @@
 package pkg
 
-import (
-	"context"
-	"log"
-
-	"database/sqlite"
-)
-
-
-
-func init() {
-
-
-db, _ := sqlite.Open("test.db")
-
-return db
+type Users struct {
+	ID            int `json:"id"`
+	Name          string `json:"name"`
+	Email         string `json:"email"`
+	VerifiedEmail bool   `json:"verified_email"`
+	Picture       string `json:"picture"`
+	Created_at    string `json:"created_at"`
 }
 
-func CreateT() {
-
-	var query string = `CREATE TABLE users (
-  		id SERIAL PRIMARY KEY,
-  		email TEXT,
-  		name TEXT,
-  		picture TEXT,
-  		verified_email BOOLEAN,
-  		created_at TIMESTAMP
-);
-`
-	stmt, _ := db.Prepare(query)
-
-	stmt.Exec()
-
-}
-
-func CreateTables(ctx context.Context, tx pgx.Tx) error {
-	// Dropping existing table if it exists
-	log.Println("Drop existing accounts table if necessary.")
-	if _, err := tx.Exec(ctx, "DROP TABLE IF EXISTS books"); err != nil {
-		return err
-	}
-
-	log.Println("Drop existing accounts table if necessary.")
-	if _, err := tx.Exec(ctx, "DROP TABLE IF EXISTS users"); err != nil {
-		return err
-	}
-	// Create the users table
-	log.Println("Creating users table...")
-	if _, err := tx.Exec(ctx,
-		`CREATE TABLE users (
-  		id SERIAL PRIMARY KEY,
-  		email TEXT,
-  		name TEXT,
-  		picture TEXT,
-  		verified_email BOOLEAN,
-  		created_at TIMESTAMP
-);
-`); err != nil {
-		return err
-	}
-
-	log.Println("Creating books table...")
-	if _, err := tx.Exec(ctx,
-		`CREATE TABLE books (
-  id SERIAL PRIMARY KEY,
-  title TEXT,
-  author TEXT,
-  user_id INTEGER,
-  status TEXT,
-  price REAL,
-  picture TEXT,
-  pages INT,
-  created_at TIMESTAMP
-);
-
-`); err != nil {
-		return err
-	}
-
-	log.Println("Creating foreign key...")
-	if _, err := tx.Exec(ctx,
-		`ALTER TABLE "books" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");`); err != nil {
-		return err
-	}
-	return nil
+type Book struct {
+	ID      int     `json:"id"`
+	Title   string  `json:"title"`
+	Author  string  `json:"author"`
+	Pages   int     `json:"pages"`
+	Picture string  `json:"picture"`
+	Prices  float64 `json:"prices"`
+	Status  string  `json:"status"`
+	UserID  int     `json:"user_id"`
+	Created_at string `json:"created_at"`
 }

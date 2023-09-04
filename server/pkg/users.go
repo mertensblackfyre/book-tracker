@@ -46,6 +46,8 @@ func (r *DB) AddUser(data string) error {
 	return nil
 }
 
+
+
 func (r *DB) AllUsers() {
 
 	rows, err := r.db.Query("SELECT * FROM users")
@@ -57,7 +59,7 @@ func (r *DB) AllUsers() {
 	var all []Users
 	for rows.Next() {
 		var users Users
-		if err := rows.Scan(&users.ID, &users.Name, &users.Email, &users.VerifiedEmail); err != nil {
+		if err := rows.Scan(&users.ID, &users.Email, &users.Name, &users.Picture, &users.VerifiedEmail, &users.Created_at); err != nil {
 			log.Println(err)
 		}
 		all = append(all, users)
