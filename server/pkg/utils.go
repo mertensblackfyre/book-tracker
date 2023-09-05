@@ -39,4 +39,3 @@ func JSONStruct(file string) []Book {
 	return b
 }
 
-// BUKmz7qnLzGFWS@

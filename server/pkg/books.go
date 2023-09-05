@@ -1,12 +1,10 @@
 package pkg
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"log"
 
-	pgx "github.com/jackc/pgx/v5"
 	sqlite3 "github.com/mattn/go-sqlite3"
 )
 

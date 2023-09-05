@@ -30,7 +30,7 @@ func main() {
 	// r.Use(handlers.Authenticate)
 	r.Use(middleware.Logger)
 
-	tmpl := template.Must(template.ParseGlob("static/*"))
+	tmpl := template.Must(template.ParseGlob("static/templates/*"))
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
@@ -41,6 +41,12 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		tmpl.ExecuteTemplate(w, "index.html", nil)
 	})
+
+	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "login.html", nil)
+	})
+
+
 
 	// Auth
 	r.Get("/auth/google", pkg.GoogleLogin)

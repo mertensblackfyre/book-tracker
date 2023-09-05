@@ -12,7 +12,7 @@ const UserProfilePage: FC<UserProfilePageType> = ({ params }) => {
          <Container>
             <header className="mb-[25px]">
                <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                  {params.username}'s books
+                  books
                </h2>
             </header>
             <div>
