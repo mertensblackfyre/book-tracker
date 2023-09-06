@@ -4,10 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/alexedwards/scs/v2"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
+
+var sessionManager *scs.SessionManager
 
 const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
@@ -50,8 +53,8 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 	}
 
-	fmt.Fprintln(w, string(data))
 	db, err := sql.Open("sqlite3", "database.db")
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +62,9 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 	q := NewDB(db)
 
 	q.AddUser(string(data))
+
 	// Store a new key and value in the session data.
+	sessionManager.Put(r.Context(), "message", "Hello from a session!")
 	http.Redirect(w, r, "/", 200)
 }
 
