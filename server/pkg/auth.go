@@ -63,8 +63,6 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 
 	q.AddUser(string(data))
 
-	// Store a new key and value in the session data.
-	sessionManager.Put(r.Context(), "message", "Hello from a session!")
 	http.Redirect(w, r, "/", 200)
 }
 

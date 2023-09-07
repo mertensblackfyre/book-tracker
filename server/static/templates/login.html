@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.5"
         integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
@@ -19,7 +20,7 @@
             </div>
 
 
-            <button hx-redirect="/auth/google" class="btn btn-primary py-2">
+            <button onclick="login()" class="btn btn-primary py-2">
                 <div class="flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="w-6 h-6"
                         viewBox="0 0 48 48">
@@ -44,5 +45,12 @@
         </div>
     </div>
 </body>
+
+
+<script>
+    const login = () => {
+        window.location = "/auth/google"
+    }
+</script>
 
 </html>
