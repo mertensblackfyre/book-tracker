@@ -45,11 +45,16 @@ func main() {
 	})
 
 	r.Get("/dashboard", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "dashboard.html", nil)
+
+        books := q.GetAllBooks(w, r)
+        log.Println(books)
+		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
+	r.Get("/addbook", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "addbook.html", nil)
 
-
+	})
 
 	// Auth
 	r.Get("/auth/google", pkg.GoogleLogin)
@@ -64,7 +69,7 @@ func main() {
 
 	// Books
 	r.Get("/add-book", pkg.Han(q.AddBook))
-	r.Get("/all/books", pkg.Han(q.GetAllBooks))
+
 	r.Get("/get-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(chi.URLParam(r, "id"))
 		if err != nil {
@@ -81,7 +86,6 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		}
-
 		q.UpdateBookStatus(id, chi.URLParam(r, "status"))
 	})
 

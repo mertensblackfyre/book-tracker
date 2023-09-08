@@ -10,9 +10,9 @@ type Users struct {
 }
 
 type Book struct {
-	ID     int    `json:"id"`
-	Title  string `json:"title"`
-	Author string `json:"author"`
+	ID         int     `json:"id"`
+	Title      string  `json:"title"`
+	Author     string  `json:"author"`
 	Status     string  `json:"status"`
 	Pages      int     `json:"pages"`
 	Picture    string  `json:"picture"`

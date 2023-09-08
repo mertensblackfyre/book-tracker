@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 
 	sqlite3 "github.com/mattn/go-sqlite3"
 )
@@ -41,12 +42,13 @@ func (r *DB) AddBook() {
 	}
 }
 
-func (r *DB) GetAllBooks() {
+func (q *DB) GetAllBooks(w http.ResponseWriter, r *http.Request) []Book {
 
-	rows, err := r.db.Query("SELECT * FROM books")
+	rows, err := q.db.Query("SELECT * FROM books")
 	if err != nil {
 		log.Println(err)
 	}
+
 	defer rows.Close()
 
 	var all []Book
@@ -54,11 +56,12 @@ func (r *DB) GetAllBooks() {
 		var b Book
 		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Status, &b.Pages, &b.Prices, &b.Picture, &b.UserID, &b.Created_at); err != nil {
 			log.Println(err)
+
 		}
 		all = append(all, b)
 	}
 
-	log.Println(all)
+	return all
 }
 
 func (r *DB) FilterBooks(status string, user_id int) []Book {
@@ -106,10 +109,10 @@ func (r *DB) UpdateBookStatus(book_id int, status string) {
 	}
 
 	if err != nil {
-        log.Println(err)
+		log.Println(err)
 	}
 
-    log.Println(res)
+	log.Println(res)
 
 }
 

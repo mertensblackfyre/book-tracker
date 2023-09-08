@@ -3,6 +3,7 @@ package pkg
 import (
 	"fmt"
 	"log"
+    "net/http"
 	"os"
 	"encoding/json"
 	"io/ioutil"
@@ -37,5 +38,16 @@ func JSONStruct(file string) []Book {
 		fmt.Println(err)
 	}
 	return b
+}
+
+
+func JSONWritter(w http.ResponseWriter, status int , v any) error  {
+	w.WriteHeader(status)
+	w.Header().Add("Content-Type","application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000/")
+	w.Header().Set("Access-Control-Allow-Methods","*")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+
+	return json.NewEncoder(w).Encode(v)
 }
 
