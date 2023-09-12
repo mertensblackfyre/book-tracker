@@ -47,7 +47,6 @@ func main() {
 	r.Get("/dashboard", func(w http.ResponseWriter, r *http.Request) {
 
         books := q.GetAllBooks(w, r)
-        log.Println(books)
 		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
