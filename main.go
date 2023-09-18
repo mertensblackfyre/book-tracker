@@ -2,19 +2,19 @@ package main
 
 import (
 	"database/sql"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
-
 	"github.com/server/pkg"
 )
 
+
 func main() {
+
 	r := chi.NewRouter()
 
 	db, err := sql.Open("sqlite3", "database.db")
@@ -26,9 +26,12 @@ func main() {
 	//q.Drop()
 	q.Migrate()
 
-	pkg.InitSessions()
-	// r.Use(handlers.Authenticate)
+	//r.Use(pkg.Authenticate)
 	r.Use(middleware.Logger)
+
+    pkg.InitSessions()
+
+
 
 	tmpl := template.Must(template.ParseGlob("static/templates/*"))
 
@@ -46,7 +49,7 @@ func main() {
 
 	r.Get("/dashboard", func(w http.ResponseWriter, r *http.Request) {
 
-        books := q.GetAllBooks(w, r)
+		books := q.GetAllBooks(w, r)
 		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
@@ -59,15 +62,13 @@ func main() {
 	r.Get("/auth/google", pkg.GoogleLogin)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 
-	r.Get("/logout", func(w http.ResponseWriter, r *http.Request) {
-		pkg.Logout(w, r)
-	})
+	r.Get("/logout", pkg.Logout)
 
 	// Users
 	r.Get("/all/users", pkg.Han(q.AllUsers))
 
 	// Books
-	r.Get("/add-book", pkg.Han(q.AddBook))
+	r.Post("/add-book", q.AddBook)
 
 	r.Get("/get-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(chi.URLParam(r, "id"))
@@ -76,9 +77,11 @@ func main() {
 		}
 		q.FilterBooks(chi.URLParam(r, "status"), id)
 	})
+
 	r.Delete("/delete-{id}", func(w http.ResponseWriter, r *http.Request) {
 		q.DeleteBook(chi.URLParam(r, "id"))
 	})
+
 	r.Put("/change-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
 
 		id, err := strconv.Atoi(chi.URLParam(r, "id"))
@@ -88,7 +91,7 @@ func main() {
 		q.UpdateBookStatus(id, chi.URLParam(r, "status"))
 	})
 
-	r.Get("/my-book-{id}", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/my-books-{id}", func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(chi.URLParam(r, "id"))
 		if err != nil {
 			log.Println(err)
@@ -97,5 +100,5 @@ func main() {
 
 	})
 
-	http.ListenAndServe(":5000", pkg.Manager.LoadAndSave(r))
+	http.ListenAndServe(":5000",pkg.SessionManager.LoadAndSave(r))
 }

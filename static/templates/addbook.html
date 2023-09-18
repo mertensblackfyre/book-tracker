@@ -56,8 +56,10 @@
                 <tr>
                     <th>Title</th>
                     <th>Author</th>
+
                     <th>Date publised</th>
 
+                    <th>Pages</th>
                 </tr>
             </thead>
             <tbody id="body">
@@ -69,14 +71,36 @@
 </div>
 
 <script>
-
     const searchInput = document.getElementById("input")
 
-    async function saveBooks(data){
+    async function saveBooks(data) {
 
 
+        const base = data.target.parentElement.parentElement
+
+        const title = base.children[0].innerText
+        const author = base.children[1].innerText
+        const pages = base.children[2].innerText
+
+        const book = {
+            "title": title,
+            "author": author,
+            "status": "Not started",
+            "pages": pages,
+            "pictures": "pp",
+            "prices": 23.12,
+            "user_id": 1,
+        }
+
+        const url = "/add-book"
+
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify(book)
+        })
 
     }
+
     async function get(query) {
 
         const url = `http://openlibrary.org/search.json?q=${query}&limit=${10}`;
@@ -90,19 +114,21 @@
 
 
     function render(data) {
-        const body = document.getElementById('body');
-        console.log(data)
-        data.map(book => {
-            const tr = document.createElement("tr")
 
+        const body = document.getElementById('body');
+
+        data.map(book => {
+
+            const tr = document.createElement("tr")
             tr.innerHTML = `
                     <td class="max-w-3/5 columns-2 whitespace-normal" >${book.title}</td>
                     <td  class="max-w-3/5 columns-2 whitespace-normal">${book.author_name[0]}</td>
 
-                    <td>${book.first_publish_year
-                }</td>
+                    <td>${book.first_publish_year}</td>
+
+                    <td>${book.number_of_pages_median}</td>
                     <td>
-                    <button class="btn btn-active btn-primary">Save</button>
+                    <button onclick="saveBooks(event)" class="btn btn-active btn-primary">Save</button>
                     </td>
 `
             body.appendChild(tr);
@@ -120,11 +146,12 @@
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
-        render(data)
 
+        render(data)
     });
 
-</script>
+    console.log(username)
 
+</script>
 
 </html>

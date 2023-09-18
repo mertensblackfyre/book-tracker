@@ -1,45 +1,55 @@
 package pkg
 
 import (
+	"encoding/json"
 	"errors"
-	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
 	sqlite3 "github.com/mattn/go-sqlite3"
 )
 
-func (r *DB) AddBook() {
+func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 
-	b := JSONStruct("MOCK_DATA.json")
+      // Read request body
+    res, err := ioutil.ReadAll(r.Body)
+    if err != nil {
+      http.Error(w, "Error reading request body", http.StatusBadRequest)
+      return
+    }
 
-	for i := 0; i < len(b); i++ {
+    // Unmarshal JSON
+    var b Book
+    err = json.Unmarshal(res, &b)
 
-		fmt.Println(i)
-		response, err := r.db.Exec("INSERT INTO books (title ,author ,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b[i].Title, b[i].Author, b[i].Status, b[i].Pages, b[i].Prices, b[i].Picture, b[i].UserID)
+    if err != nil {
+        JSONWritter(w,401,err)
+    }
 
-		if err != nil {
+	response, err := q.db.Exec("INSERT INTO books (title ,author ,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, b.UserID)
 
-			log.Println(err)
-			var sqliteErr sqlite3.Error
-			if errors.As(err, &sqliteErr) {
-				if errors.Is(sqliteErr.ExtendedCode, sqlite3.ErrConstraintUnique) {
-					log.Println(err)
-				}
+	if err != nil {
+
+		log.Println(err)
+		var sqliteErr sqlite3.Error
+		if errors.As(err, &sqliteErr) {
+			if errors.Is(sqliteErr.ExtendedCode, sqlite3.ErrConstraintUnique) {
+				log.Println(err)
 			}
 		}
-
-		if err != nil {
-			log.Println(err)
-		}
-		id, err := response.LastInsertId()
-		if err != nil {
-			log.Println(err)
-		}
-
-		log.Println(id)
-
 	}
+
+	if err != nil {
+		log.Println(err)
+	}
+	id, err := response.LastInsertId()
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(id)
+
 }
 
 func (q *DB) GetAllBooks(w http.ResponseWriter, r *http.Request) []Book {
