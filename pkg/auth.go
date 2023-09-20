@@ -7,17 +7,17 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
-
-	"github.com/golang-jwt/jwt/v5"
+    "time"
+ "github.com/golang-jwt/jwt"
 )
+
 
 const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
 func JWT(data string) string {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":  data,
+		"id":  22,
 		"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
 	})
 
@@ -28,8 +28,27 @@ func JWT(data string) string {
 		log.Println(err)
 	}
 
+    fmt.Println(tokenString)
 	return tokenString
 
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+
+    str := JWT("ss")
+    fmt.Println(str)
+	cookie := http.Cookie{
+		Name:     "Token",
+		Value:   str,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HttpOnly: true,
+		Secure:   true,
+		Domain:   "localhost",
+		Path:     "/",
+		SameSite: http.SameSiteStrictMode,
+	}
+
+	http.SetCookie(w, &cookie)
 }
 
 func GoogleLogin(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +85,7 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data, err := ioutil.ReadAll(response.Body)
+	fmt.Println(data)
 
 	if err != nil {
 		fmt.Fprintln(w, err)
@@ -77,25 +97,15 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	q := NewDB(db)
+	NewDB(db)
 
-	q.AddUser(string(data))
+	//q.AddUser(string(data))
 
 	// Set a cookie
-	cookie := http.Cookie{
-		Name:     "Authorization",
-		Value:    JWT(string(data)),
-		Expires:  time.Now().Add(24 * time.Hour),
-		MaxAge:   86400,
-		Secure:   true,
-		SameSite: http.SameSiteStrictMode,
-	}
 
-	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, "/", 200)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(w, "Success")
 }
-
