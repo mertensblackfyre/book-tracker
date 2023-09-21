@@ -2,14 +2,15 @@ package main
 
 import (
 	"database/sql"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
-	"github.com/server/pkg"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/server/pkg"
 )
 
 func main() {
@@ -25,7 +26,7 @@ func main() {
 	//q.Drop()
 	q.Migrate()
 
-	r.Use(pkg.Authenticate)
+	//r.Use(pkg.Authenticate)
 	r.Use(middleware.Logger)
 
 	tmpl := template.Must(template.ParseGlob("static/templates/*"))
@@ -40,7 +41,8 @@ func main() {
 
 	r.Get("/dashboard", func(w http.ResponseWriter, r *http.Request) {
 
-		books := q.GetAllBooks(w, r)
+		data := r.Context().Value("data").(string)
+		books := q.GetUsersBooks(data)
 		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
@@ -49,9 +51,19 @@ func main() {
 
 	})
 
+	// Public routes
+	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "login.html", nil)
+	})
+
+	// Auth
+	r.Get("/auth/google", pkg.GoogleLogin)
+	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
+
 	// Users
 	r.Get("/all/users", pkg.Han(q.AllUsers))
+
 	// Books
 	r.Post("/add-book", q.AddBook)
 	r.Get("/get-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
@@ -65,28 +77,15 @@ func main() {
 		q.DeleteBook(chi.URLParam(r, "id"))
 	})
 	r.Put("/change-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(chi.URLParam(r, "id"))
 		if err != nil {
 			log.Println(err)
 		}
-		q.UpdateBookStatus(id, chi.URLParam(r, "status"))
+	//	q.UpdateBookStatus(id, chi.URLParam(r, "status"))
 	})
-	r.Get("/my-books-{id}", func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	r.Get("/my-books", func(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 		}
-		q.GetUsersBooks(id)
 	})
-
-	// Public routes
-	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "login.html", nil)
-	})
-
-	// Auth
-	r.Get("/auth/google", pkg.GoogleLogin)
-	r.Get("/auth/callback", pkg.GoogleCallBack)
-
 	http.ListenAndServe(":5000", r)
 }

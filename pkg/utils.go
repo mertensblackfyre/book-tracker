@@ -1,16 +1,16 @@
 package pkg
 
 import (
-	"fmt"
-	"log"
-    "net/http"
-	"os"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-
+	"log"
+	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 )
+
 
 func GetEnv(key string) string {
 
@@ -40,14 +40,12 @@ func JSONStruct(file string) []Book {
 	return b
 }
 
-
-func JSONWritter(w http.ResponseWriter, status int , v any) error  {
+func JSONWritter(w http.ResponseWriter, status int, v any) error {
 	w.WriteHeader(status)
-	w.Header().Add("Content-Type","application/json")
+	w.Header().Add("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000/")
-	w.Header().Set("Access-Control-Allow-Methods","*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 
 	return json.NewEncoder(w).Encode(v)
 }
-

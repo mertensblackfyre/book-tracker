@@ -39,7 +39,7 @@
                         <span class="badge">New</span>
                     </a>
                 </li>
-                <li><a>Logout</a></li>
+                <li><a onclick="logout()">Logout</a></li>
             </ul>
         </div>
     </div>
@@ -72,35 +72,47 @@
 
 <script>
 
-
+    async function logout(){
+    
+        window.location = "/logout"
+            }
 
     const searchInput = document.getElementById("input")
 
     async function saveBooks(data) {
+        try {
+            const base = data.target.parentElement.parentElement
+
+            const title = base.children[0].innerText
+            const author = base.children[1].innerText
+            const pages = base.children[2].innerText
+
+            const book = {
+                "title": title,
+                "author": author,
+                "status": "Not started",
+                "pages": Number(pages),
+                "pictures": "pp",
+                "prices": 23.12,
+                "user_id": "1",
+            }
+
+            const url = "/add-book"
+
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify(book)
+            })
+
+            const q = await response.json()
 
 
-        const base = data.target.parentElement.parentElement
 
-        const title = base.children[0].innerText
-        const author = base.children[1].innerText
-        const pages = base.children[2].innerText
-
-        const book = {
-            "title": title,
-            "author": author,
-            "status": "Not started",
-            "pages": pages,
-            "pictures": "pp",
-            "prices": 23.12,
-            "user_id": 1,
         }
-
-        const url = "/add-book"
-
-        const response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify(book)
-        })
+        catch (err) {
+            console.log(err)
+            // handle error 
+        }
 
     }
 
@@ -153,7 +165,6 @@
         render(data)
     });
 
-    console.log(username)
 
 </script>
 

@@ -3,6 +3,7 @@ package pkg
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,22 +13,25 @@ import (
 
 func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 
-      // Read request body
-    res, err := ioutil.ReadAll(r.Body)
-    if err != nil {
-      http.Error(w, "Error reading request body", http.StatusBadRequest)
-      return
-    }
+	data := r.Context().Value("data").(string)
+    fmt.Println(data)
+	// Read request body
+	res, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
+	}
 
-    // Unmarshal JSON
-    var b Book
-    err = json.Unmarshal(res, &b)
+	// Unmarshal JSON
+	var b Book
+	err = json.Unmarshal(res, &b)
 
-    if err != nil {
-        JSONWritter(w,401,err)
-    }
+	if err != nil {
+        log.Println(err)
+		JSONWritter(w, 400, err)
+	}
 
-	response, err := q.db.Exec("INSERT INTO books (title ,author ,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, b.UserID)
+	response, err := q.db.Exec("INSERT INTO books (title ,author ,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, data)
 
 	if err != nil {
 
@@ -126,7 +130,7 @@ func (r *DB) UpdateBookStatus(book_id int, status string) {
 
 }
 
-func (r *DB) GetUsersBooks(user_id int) []Book {
+func (r *DB) GetUsersBooks(user_id string) []Book {
 
 	rows, err := r.db.Query("SELECT * FROM books WHERE user_id = ?", user_id)
 	if err != nil {
@@ -143,7 +147,6 @@ func (r *DB) GetUsersBooks(user_id int) []Book {
 		all = append(all, b)
 	}
 
-	log.Println(all)
 	return all
 
 }

@@ -86,6 +86,7 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+
 	// Set token cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Token",
@@ -95,7 +96,7 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 		Expires: time.Now().Add(30 * time.Minute),
 	})
 
-	http.Redirect(w, r, "/", 200)
+	http.Redirect(w, r, "/", 301)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
@@ -106,6 +107,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &cookie)
 
-	http.Redirect(w, r, "/login", 200)
+	//http.Redirect(w, r, "/login", 301)
 	fmt.Println(w, "Success")
 }
