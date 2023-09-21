@@ -18,7 +18,7 @@ func (r *DB) AddUser(data string) error {
 		return err
 	}
 
-	response, err := r.db.Exec("INSERT INTO users (email ,name ,picture,verified_email) VALUES (?, ?, ?, ?)", user.Email, user.Name, user.Picture, user.VerifiedEmail)
+	response, err := r.db.Exec("INSERT INTO users (id,email ,name ,picture,verified_email) VALUES (?,?, ?, ?, ?)", user.ID, user.Email, user.Name, user.Picture, user.VerifiedEmail)
 
 	if err != nil {
 
@@ -45,8 +45,6 @@ func (r *DB) AddUser(data string) error {
 
 	return nil
 }
-
-
 
 func (r *DB) AllUsers() {
 

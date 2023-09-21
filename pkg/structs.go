@@ -1,7 +1,7 @@
 package pkg
 
 type Users struct {
-	ID            int    `json:"id"`
+	ID            string `json:"id"`
 	Name          string `json:"name"`
 	Email         string `json:"email"`
 	VerifiedEmail bool   `json:"verified_email"`
@@ -17,6 +17,6 @@ type Book struct {
 	Pages      int     `json:"pages"`
 	Picture    string  `json:"picture"`
 	Prices     float64 `json:"prices"`
-	UserID     int     `json:"user_id"`
+	UserID     string  `json:"user_id"`
 	Created_at string  `json:"created_at"`
 }

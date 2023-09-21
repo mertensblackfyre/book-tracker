@@ -41,7 +41,7 @@ func (r *DB) Migrate() error {
 
 	// users table
 	query := `CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            id TEXT PRIMARY KEY, 
             email TEXT,
             name TEXT,
             picture TEXT,
@@ -54,7 +54,7 @@ func (r *DB) Migrate() error {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             author TEXT, 
-            user_id INTEGER,
+            user_id TEXT,
             status TEXT,
             price REAL,
             picture TEXT,
