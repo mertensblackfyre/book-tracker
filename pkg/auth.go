@@ -5,12 +5,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/golang-jwt/jwt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
-
-	"github.com/golang-jwt/jwt"
 )
 
 const OauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
@@ -30,6 +29,20 @@ func JWT(data string) string {
 
 	return tokenString
 
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+
+	// Set token cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:    "Token",
+		Value:   JWT("1"),
+		Secure:  false,
+        Path: "/",
+		Expires: time.Now().Add(30 * time.Minute),
+	})
+
+	//http.Redirect(w, r, "/dashboard", 301)
 }
 
 func GoogleLogin(w http.ResponseWriter, r *http.Request) {
@@ -86,20 +99,21 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-
 	// Set token cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Token",
 		Value:   JWT(user.ID),
 		Secure:  false,
-		Path:    "/",
+        Path: "/",
 		Expires: time.Now().Add(30 * time.Minute),
 	})
 
-	http.Redirect(w, r, "/", 301)
+	http.Redirect(w, r, "/dashboard", 301)
+
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
+
 	cookie := http.Cookie{
 		Name:    "Token",
 		Expires: time.Unix(0, 0),
@@ -107,6 +121,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &cookie)
 
-	//http.Redirect(w, r, "/login", 301)
+	http.Redirect(w, r, "/login", 301)
 	fmt.Println(w, "Success")
 }

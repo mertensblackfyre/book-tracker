@@ -50,7 +50,9 @@
 <script>
 
     async function login() {
-        window.location = "/auth/google"
+        console.log("a")
+        window.location.replace("/auth/google");
+        window.location.status = 301;
     }
 
 </script>

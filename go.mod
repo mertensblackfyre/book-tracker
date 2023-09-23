@@ -13,11 +13,9 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.17
 )
 
-require github.com/joho/godotenv v1.5.1
-
 require (
-	github.com/webview/webview v0.0.0-20230918173656-e77e3c2da385 // indirect
-	github.com/webview/webview_go v0.0.0-20230901181450-5a14030a9070 // indirect
+	github.com/joho/godotenv v1.5.1
+	golang.org/x/tools v0.13.0
 )
 
 require (
@@ -25,7 +23,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/go-chi/cors v1.2.1
 	github.com/golang/protobuf v1.5.3 // indirect
-	golang.org/x/net v0.12.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 )

@@ -36,7 +36,9 @@ func (r *DB) AddUser(data string) error {
 	if err != nil {
 		return err
 	}
+
 	id, err := response.LastInsertId()
+
 	if err != nil {
 		return err
 	}

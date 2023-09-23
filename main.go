@@ -26,7 +26,7 @@ func main() {
 	//q.Drop()
 	q.Migrate()
 
-	//r.Use(pkg.Authenticate)
+	r.Use(pkg.Authenticate)
 	r.Use(middleware.Logger)
 
 	tmpl := template.Must(template.ParseGlob("static/templates/*"))
@@ -40,7 +40,6 @@ func main() {
 	})
 
 	r.Get("/dashboard", func(w http.ResponseWriter, r *http.Request) {
-
 		data := r.Context().Value("data").(string)
 		books := q.GetUsersBooks(data)
 		tmpl.ExecuteTemplate(w, "dashboard.html", books)
@@ -57,7 +56,7 @@ func main() {
 	})
 
 	// Auth
-	r.Get("/auth/google", pkg.GoogleLogin)
+	r.Get("/auth/google", pkg.Login)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
 
@@ -80,12 +79,7 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		}
-	//	q.UpdateBookStatus(id, chi.URLParam(r, "status"))
-	})
-	r.Get("/my-books", func(w http.ResponseWriter, r *http.Request) {
-		if err != nil {
-			log.Println(err)
-		}
+		//	q.UpdateBookStatus(id, chi.URLParam(r, "status"))
 	})
 	http.ListenAndServe(":5000", r)
 }

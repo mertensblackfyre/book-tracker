@@ -15,30 +15,34 @@ func Authenticate(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 
 		} else {
+
 			cookie, err := r.Cookie("Token")
 
 			if err != nil {
 				log.Println(err)
+				w.WriteHeader(401)
+				w.Write([]byte("Unauthorized"))
 				return
 			}
+
 			// Verify and parse token
 			tknStr := cookie.Value
 			token, err := jwt.Parse(tknStr, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 				}
-
-				//	next.ServeHTTP(w, r)
-
 				return []byte(GetEnv("SECRET")), nil
 			})
 
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 				ctx := context.WithValue(r.Context(), "data", claims["id"])
 				r = r.WithContext(ctx)
+
 			} else {
 				fmt.Println(err)
-                return
+				w.WriteHeader(401)
+				w.Write([]byte("Unauthorized"))
+				return
 			}
 
 			next.ServeHTTP(w, r)
