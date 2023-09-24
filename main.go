@@ -39,9 +39,19 @@ func main() {
 		tmpl.ExecuteTemplate(w, "index.html", nil)
 	})
 
-	r.Get("/dashboard", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/mybooks", func(w http.ResponseWriter, r *http.Request) {
 		data := r.Context().Value("data").(string)
-		books := q.GetUsersBooks(data)
+		if data == "" {
+			return
+		}
+
+		books, err := q.GetUsersBooks("1")
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
 		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
@@ -61,7 +71,7 @@ func main() {
 	r.Get("/logout", pkg.Logout)
 
 	// Users
-	r.Get("/all/users", pkg.Han(q.AllUsers))
+	//r.Get("/all/users", pkg.Han(q.AllUsers))
 
 	// Books
 	r.Post("/add-book", q.AddBook)

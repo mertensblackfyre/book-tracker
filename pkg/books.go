@@ -14,7 +14,7 @@ import (
 func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 
 	data := r.Context().Value("data").(string)
-    fmt.Println(data)
+	fmt.Println(data)
 	// Read request body
 	res, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -27,7 +27,7 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(res, &b)
 
 	if err != nil {
-        log.Println(err)
+		log.Println(err)
 		JSONWritter(w, 400, err)
 	}
 
@@ -130,11 +130,12 @@ func (r *DB) UpdateBookStatus(book_id int, status string) {
 
 }
 
-func (r *DB) GetUsersBooks(user_id string) []Book {
+func (r *DB) GetUsersBooks(user_id string) ([]Book, error) {
 
 	rows, err := r.db.Query("SELECT * FROM books WHERE user_id = ?", user_id)
 	if err != nil {
 		log.Println(err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -147,6 +148,6 @@ func (r *DB) GetUsersBooks(user_id string) []Book {
 		all = append(all, b)
 	}
 
-	return all
+	return all, nil
 
 }
