@@ -22,7 +22,7 @@ func Authenticate(next http.Handler) http.Handler {
 			if err != nil {
 				log.Println(err)
 				w.WriteHeader(401)
-				http.Redirect(w, r, "/login", 302)
+				w.Write([]byte("Unauthorized"))
 				return
 			}
 
@@ -41,8 +41,7 @@ func Authenticate(next http.Handler) http.Handler {
 
 			} else {
 				fmt.Println(err)
-				w.WriteHeader(401)
-				http.Redirect(w, r, "/login", 302)
+				//w.WriteHeader(401)
 				//	w.Write([]byte("Unauthorized"))
 				return
 			}

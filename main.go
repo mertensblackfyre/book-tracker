@@ -45,7 +45,7 @@ func main() {
 			return
 		}
 
-		books, err := q.GetUsersBooks("1")
+		books, err := q.GetUsersBooks(data)
 
 		if err != nil {
 			log.Println(err)
@@ -66,7 +66,7 @@ func main() {
 	})
 
 	// Auth
-	r.Get("/auth/google", pkg.Login)
+	r.Get("/auth/google", pkg.GoogleLogin)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
 
@@ -75,6 +75,7 @@ func main() {
 
 	// Books
 	r.Post("/add-book", q.AddBook)
+
 	r.Get("/get-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(chi.URLParam(r, "id"))
 		if err != nil {
@@ -82,9 +83,11 @@ func main() {
 		}
 		q.FilterBooks(chi.URLParam(r, "status"), id)
 	})
+
 	r.Delete("/delete-{id}", func(w http.ResponseWriter, r *http.Request) {
 		q.DeleteBook(chi.URLParam(r, "id"))
 	})
+
 	r.Put("/change-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)

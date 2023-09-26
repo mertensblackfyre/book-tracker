@@ -31,21 +31,20 @@ func JWT(data string) string {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-    fmt.Println("SETT cookies")
-    str := JWT("1")
+	fmt.Println("SETT cookies")
+	str := JWT("1")
 
-
-    fmt.Println(str)
+	// fmt.Println(str)
 	// Set token cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Token",
-		Value:  str,
+		Value:   str,
 		Secure:  false,
-        Path: "/",
+		Path:    "/",
 		Expires: time.Now().Add(30 * time.Minute),
 	})
 
-	//http.Redirect(w, r, "/mybooks", 301)
+	http.Redirect(w, r, "/mybooks", 302)
 }
 
 func GoogleLogin(w http.ResponseWriter, r *http.Request) {
@@ -107,24 +106,24 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 		Name:    "Token",
 		Value:   JWT(user.ID),
 		Secure:  false,
-        Path: "/",
+		Path:    "/",
 		Expires: time.Now().Add(30 * time.Minute),
 	})
 
-	http.Redirect(w, r, "/mybooks", 301)
+	http.Redirect(w, r, "/mybooks", 302)
 
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{
-		Name:"Token",
-        Value: "",
-        Secure: false,
-        Path: "/",
+		Name:    "Token",
+		Value:   "",
+		Secure:  false,
+		Path:    "/",
 		Expires: time.Unix(0, 0),
 	})
 
 	fmt.Println(w, "Success")
-	//http.Redirect(w, r, "/login", 301)
+	http.Redirect(w, r, "/login", 302)
 }
