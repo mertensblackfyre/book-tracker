@@ -11,7 +11,7 @@ func GoogleAuthConfig() *oauth2.Config {
 	conf := &oauth2.Config{
 		ClientID:     GetEnv("GOOGLE_CLIENT"),
 		ClientSecret: GetEnv("GOOGLE_SECRET"),
-		RedirectURL:  "http://localhost:5000/auth/callback",
+		RedirectURL:  "/auth/callback",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile",
