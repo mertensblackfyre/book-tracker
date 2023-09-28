@@ -105,7 +105,7 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Token",
 		Value:   JWT(user.ID),
-		Secure:  false,
+		Secure:  true,
 		Path:    "/",
 		Expires: time.Now().Add(30 * time.Minute),
 	})

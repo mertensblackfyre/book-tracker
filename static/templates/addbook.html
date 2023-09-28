@@ -87,7 +87,7 @@
 
     async function get(query) {
 
-        const url = `http://openlibrary.org/search.json?q=${query}&limit=${10}`;
+        const url = `https://openlibrary.org/search.json?q=${query}&limit=${10}`;
         const results = await fetch(url);
 
         // Get JSON results
