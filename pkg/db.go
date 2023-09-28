@@ -59,6 +59,7 @@ func (r *DB) Migrate() error {
             price REAL,
             picture TEXT,
             pages INTEGER,
+            started_at TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
         );`

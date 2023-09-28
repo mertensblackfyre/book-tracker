@@ -5,38 +5,16 @@
     <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/htmx.org@1.9.6"
+        integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+        crossorigin="anonymous"></script>
+
+
 </head>
 
+  {{ template "nav" . }}
 
-
-<div class="navbar bg-base-100">
-    <div class="flex-1">
-        <a class="btn btn-ghost normal-case text-xl">myBooks</a>
-    </div>
-    <div class="flex-none">
-        <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn btn-ghost btn-circle">
-                <div onclick="redirect('/mybooks')" class="indicator">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path
-                            d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z" />
-                    </svg>
-                </div>
-            </label>
-        </div>
-        <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                <div class="w-10 rounded-full">
-                    <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                </div>
-            </label>
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a onclick="redirect('/logout')">Logout</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
 <div class="divider"></div>
 
 <div class="w-full  flex items-center justify-center mt-5 flex-col">
@@ -65,10 +43,8 @@
 
 <script>
     function redirect(url) {
-
         window.location = url
     }
-
 
     const searchInput = document.getElementById("input")
 

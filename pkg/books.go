@@ -31,7 +31,7 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 		JSONWritter(w, 400, err)
 	}
 
-	response, err := q.db.Exec("INSERT INTO books (title ,author ,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, data)
+	response, err := q.db.Exec("INSERT INTO books (title ,author,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, data)
 
 	if err != nil {
 
@@ -133,16 +133,19 @@ func (r *DB) UpdateBookStatus(book_id int, status string) {
 func (r *DB) GetUsersBooks(user_id string) ([]Book, error) {
 
 	rows, err := r.db.Query("SELECT * FROM books WHERE user_id = ?", user_id)
-	if err != nil {
+ 
+	 if err != nil {
 		log.Println(err)
 		return nil, err
 	}
+  
 	defer rows.Close()
 
 	var all []Book
 	for rows.Next() {
 		var b Book
-		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Status, &b.Pages, &b.Prices, &b.Picture, &b.UserID, &b.Created_at); err != nil {
+		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.UserID, &b.Status, &b.Prices, &b.Picture, &b.Pages, &b.Created_at); err != nil {
+
 			log.Println(err)
 		}
 		all = append(all, b)

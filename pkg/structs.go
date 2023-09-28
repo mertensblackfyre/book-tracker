@@ -13,10 +13,11 @@ type Book struct {
 	ID         int     `json:"id"`
 	Title      string  `json:"title"`
 	Author     string  `json:"author"`
+	UserID     string  `json:"user_id"`
 	Status     string  `json:"status"`
 	Pages      int     `json:"pages"`
 	Picture    string  `json:"picture"`
 	Prices     float64 `json:"prices"`
-	UserID     string  `json:"user_id"`
+	Started_at string  `json:"started_at"`
 	Created_at string  `json:"created_at"`
 }

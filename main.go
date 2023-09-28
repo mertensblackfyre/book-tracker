@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -51,11 +52,13 @@ func main() {
 			log.Println(err)
 			return
 		}
+        fmt.Println(books)
 
 		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
 	r.Get("/addbook", func(w http.ResponseWriter, r *http.Request) {
+
 		tmpl.ExecuteTemplate(w, "addbook.html", nil)
 
 	})
@@ -94,5 +97,6 @@ func main() {
 		}
 		//	q.UpdateBookStatus(id, chi.URLParam(r, "status"))
 	})
+
 	http.ListenAndServe(":5000", r)
 }
