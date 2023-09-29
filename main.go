@@ -52,15 +52,12 @@ func main() {
 			log.Println(err)
 			return
 		}
-        fmt.Println(books)
 
 		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
 	r.Get("/addbook", func(w http.ResponseWriter, r *http.Request) {
-
 		tmpl.ExecuteTemplate(w, "addbook.html", nil)
-
 	})
 
 	// Public routes
@@ -69,7 +66,7 @@ func main() {
 	})
 
 	// Auth
-	r.Get("/auth/google", pkg.GoogleLogin)
+	r.Get("/auth/google", pkg.Login)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
 
@@ -78,6 +75,22 @@ func main() {
 
 	// Books
 	r.Post("/add-book", q.AddBook)
+	r.Get("/book/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			log.Println(err)
+		}
+
+		book, err := q.GetBook(id)
+
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		tmpl.ExecuteTemplate(w, "details.html", book)
+
+	})
 
 	r.Get("/get-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(chi.URLParam(r, "id"))

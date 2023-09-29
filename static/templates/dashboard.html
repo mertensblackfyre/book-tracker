@@ -13,35 +13,22 @@
 
 <body>
 
-  {{ template "nav" . }}
+    {{ template "nav" . }}
 
     <div class="divider"></div>
-
-    <div class="overflow-x-auto w-full ">
-        <table id="table" class="table w-full">
+    <div class="overflow-x-auto w-full flex items-center justify-center">
+        <table id="table" class=" table w-11/12">
             <!-- head -->
             <thead>
                 <tr>
-                    <th>
-                        <label>
-                            <input type="checkbox" class="checkbox" />
-                        </label>
-                    </th>
                     <th>Title/Author</th>
                     <th>Status</th>
-                    <th>Started at</th>
-                    <th></th>
                 </tr>
             </thead>
 
             <tbody>
                 {{ range .}}
-                <tr>
-                    <th>
-                        <label>
-                            <input type="checkbox" class="checkbox" />
-                        </label>
-                    </th>
+                <tr class="hover" hx-on:click="click: redirect('/book/{{.ID}}')">
                     <td>
                         <div class="flex items-center space-x-3">
                             <div>
@@ -51,15 +38,10 @@
                         </div>
                     </td>
                     <td>
-                        <br />
                         <div class="badge badge-success">
                             {{.Status}}
                         </div>
                     </td>
-                    <td>May 23,2021</td>
-                    <th>
-                        <button class="btn btn-ghost btn-xs">details</button>
-                    </th>
                 </tr>
 
             </tbody>
@@ -70,6 +52,11 @@
 
 
 <script>
+
+    function details() {
+        console.log("Hello World")
+    }
+
     function redirect(url) {
         window.location = url
     }

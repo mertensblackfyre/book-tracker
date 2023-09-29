@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -127,18 +128,35 @@ func (r *DB) UpdateBookStatus(book_id int, status string) {
 	}
 
 	log.Println(res)
+}
 
+func (r *DB) GetBook(id int) (Book, error) {
+
+	row := r.db.QueryRow("SELECT * FROM books WHERE id = ?", id)
+
+	var b Book
+
+	if err := row.Scan(&b.ID, &b.Title, &b.Author, &b.UserID, &b.Status, &b.Prices, &b.Picture, &b.Pages, &b.Created_at); err != nil {
+
+		if errors.Is(err, sql.ErrNoRows) {
+			log.Println(err)
+		}
+
+		log.Println(err)
+	}
+
+	return b, nil
 }
 
 func (r *DB) GetUsersBooks(user_id string) ([]Book, error) {
 
 	rows, err := r.db.Query("SELECT * FROM books WHERE user_id = ?", user_id)
- 
-	 if err != nil {
+
+	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-  
+
 	defer rows.Close()
 
 	var all []Book
@@ -152,5 +170,4 @@ func (r *DB) GetUsersBooks(user_id string) ([]Book, error) {
 	}
 
 	return all, nil
-
 }

@@ -13,7 +13,7 @@
 
 </head>
 
-  {{ template "nav" . }}
+{{ template "nav" . }}
 
 <div class="divider"></div>
 
@@ -63,7 +63,6 @@
                 "pages": Number(pages),
                 "pictures": "pp",
                 "prices": 23.12,
-                "user_id": "1",
             }
 
             const url = "/add-book"
@@ -74,9 +73,6 @@
             })
 
             const q = await response.json()
-
-
-
         }
         catch (err) {
             console.log(err)
@@ -92,6 +88,7 @@
 
         // Get JSON results
         const data = await results.json();
+        console.log(data.docs)
 
         return data.docs
     }

@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.5"
+        integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    {{ template "nav" . }}
+
+    <div class="divider"></div>
+    <div class="card w-96 bg-base-100 shadow-xl">
+        <figure><img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+        <div class="card-body">
+
+            <h2 class="card-title">{{.Title}}
+
+
+                <div class="badge badge-secondary">{{.Status}}</div>
+            </h2>
+
+            <p>{{.Author}}</p>
+            <div class="card-actions justify-end">
+                <div class="badge badge-outline">Fashion</div>
+                <div class="badge badge-outline">Products</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+
+
+    function redirect(url) {
+        window.location = url
+    }
+
+</script>
+
+</html>

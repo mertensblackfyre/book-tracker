@@ -119,7 +119,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Token",
 		Value:   "",
-		Secure:  false,
+		Secure:  true,
 		Path:    "/",
 		Expires: time.Unix(0, 0),
 	})
