@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
 
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.5"
         integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
@@ -28,26 +29,36 @@
                 {{.Status}}
             </div>
             <div class="card-actions justify-end">
-                <button class="btn" onclick="my_modal_1.showModal()">Edit</button>
 
             </div>
+            <ul class="menu bg-base-200 w-56 rounded-box">
+                <li><a hx-on:click="click: update('Not started',{{.ID}})">Not started</a></li>
+                <li><a hx-on:click="click: update('Started',{{.ID}})"> Started</a></li>
+                <li><a hx-on:click="click: update('Finished',{{.ID}})">Finished</a></li>
+            </ul>
         </div>
 
     </div>
 
-    <dialog id="my_modal_1" class="modal">
-        <div class="modal-box w-full h-full">
-            <form method="dialog" class="w-full h-full">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <h3 class="font-bold text-lg">Hello!</h3>
-            <p class="py-4">Press ESC key or click on ✕ button to close</p>
-        </div>
-    </dialog>
 
 </body>
 
 <script>
+
+    async function update(status, id) {
+        try {
+            const url = `/change-${status}-${id}`
+
+            const response = await fetch(url, {
+                method: "PUT",
+            })
+
+window.location.reload();
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
 
     function redirect(url) {
         window.location = url

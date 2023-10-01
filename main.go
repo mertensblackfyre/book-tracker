@@ -104,10 +104,17 @@ func main() {
 	})
 
 	r.Put("/change-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		status := chi.URLParam(r, "status")
+
 		if err != nil {
 			log.Println(err)
 		}
-		//	q.UpdateBookStatus(id, chi.URLParam(r, "status"))
+
+		fmt.Println(id, status)
+
+		q.UpdateBookStatus(id, status)
+
 	})
 
 	http.ListenAndServe(":5000", r)
