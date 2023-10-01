@@ -28,6 +28,7 @@
 
             <tbody>
                 {{ range .}}
+
                 <tr class="hover" hx-on:click="click: redirect('/book/{{.ID}}')">
                     <td>
                         <div class="flex items-center space-x-3">
@@ -43,7 +44,6 @@
                         </div>
                     </td>
                 </tr>
-
             </tbody>
             {{end}}
 

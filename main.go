@@ -66,7 +66,7 @@ func main() {
 	})
 
 	// Auth
-	r.Get("/auth/google", pkg.GoogleLogin)
+	r.Get("/auth/google", pkg.Login)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
 
@@ -82,7 +82,6 @@ func main() {
 		}
 
 		book, err := q.GetBook(id)
-
 
 		if err != nil {
 			fmt.Println(err)
