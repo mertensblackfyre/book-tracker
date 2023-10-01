@@ -36,11 +36,21 @@
 
     async function saveBooks(data) {
         try {
-            const base = data.target.parentElement.parentElement
 
+            // Get the div with class "card-body"
+            const cardBody = document.querySelector('.card-body');
 
-            const title = base.children[0].innerText
-            const author = base.children[1].innerHTML
+            // Get the h2 (first child element)  
+            const h2 = cardBody.children[0];
+
+            // Get the p (second child element)
+            const p = cardBody.children[1];
+
+            // Access innerText of h2 
+            const title = h2.innerText;
+
+            // Access innerHTML of p
+            const author = p.innerHTML;
 
 
             const book = {
@@ -60,6 +70,7 @@
             })
 
             const q = await response.json()
+            console.log(q)
 
         }
         catch (err) {

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,7 +14,6 @@ import (
 func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 
 	data := r.Context().Value("data").(string)
-	fmt.Println(data)
 	// Read request body
 	res, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -48,9 +46,11 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+
 	id, err := response.LastInsertId()
 	if err != nil {
 		log.Println(err)
+        return
 	}
 
 	log.Println(id)
