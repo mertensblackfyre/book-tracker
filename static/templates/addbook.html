@@ -1,8 +1,13 @@
-<html>
+<!DOCTYPE html >
+
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
+
+    <meta name="theme-color" content="dark" />
+
     <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -10,6 +15,9 @@
         integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
         crossorigin="anonymous"></script>
 
+    <link rel="manifest" href="../manifest.json">
+
+    <title>Book Tracker</title>
 
 </head>
 
@@ -28,6 +36,12 @@
 </div>
 
 <script>
+
+    if('serviceWorker' in navigator){
+        navigator.serviceWorker.register('/static/service-worker.js')
+    }
+
+
     function redirect(url) {
         window.location = url
     }
@@ -38,10 +52,10 @@
         try {
 
             // Get the div with class "card-body"
-  
+
             if (!response.ok) {
                 throw new Error('Request failed with status: ' + response.status);
-            }          const cardBody = document.querySelector('.card-body');
+            } const cardBody = document.querySelector('.card-body');
             const h2 = cardBody.children[0];
             const p = cardBody.children[1];
             const title = h2.innerText;
