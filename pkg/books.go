@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,6 +17,7 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 	data := r.Context().Value("data").(string)
 	// Read request body
 	res, err := ioutil.ReadAll(r.Body)
+
 	if err != nil {
 		http.Error(w, "Error reading request body", http.StatusBadRequest)
 		return
@@ -24,6 +26,8 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal JSON
 	var b Book
 	err = json.Unmarshal(res, &b)
+
+	fmt.Println(b)
 
 	if err != nil {
 		log.Println(err)
@@ -50,7 +54,7 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 	id, err := response.LastInsertId()
 	if err != nil {
 		log.Println(err)
-        return
+		return
 	}
 
 	log.Println(id)
@@ -136,7 +140,7 @@ func (r *DB) GetBook(id int) (Book, error) {
 
 	var b Book
 
-	if err := row.Scan(&b.ID, &b.Title, &b.Author, &b.UserID, &b.Status, &b.Prices, &b.Picture, &b.Pages, &b.Created_at); err != nil {
+	if err := row.Scan(&b.ID, &b.Title, &b.Author, &b.UserID, &b.Status, &b.Prices, &b.Picture, &b.Pages, &b.Started_at, &b.Created_at); err != nil {
 
 		if errors.Is(err, sql.ErrNoRows) {
 			log.Println(err)
@@ -162,8 +166,7 @@ func (r *DB) GetUsersBooks(user_id string) ([]Book, error) {
 	var all []Book
 	for rows.Next() {
 		var b Book
-		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.UserID, &b.Status, &b.Prices, &b.Picture, &b.Pages, &b.Created_at); err != nil {
-
+		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.UserID, &b.Status, &b.Prices, &b.Picture, &b.Pages, &b.Started_at, &b.Created_at); err != nil {
 			log.Println(err)
 		}
 		all = append(all, b)

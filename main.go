@@ -66,7 +66,7 @@ func main() {
 	})
 
 	// Auth
-	r.Get("/auth/google", pkg.Login)
+	r.Get("/auth/google", pkg.GoogleLogin)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
 
@@ -110,8 +110,6 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		}
-
-		fmt.Println(id, status)
 
 		q.UpdateBookStatus(id, status)
 

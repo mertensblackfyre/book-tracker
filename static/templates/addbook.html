@@ -38,29 +38,24 @@
         try {
 
             // Get the div with class "card-body"
-            const cardBody = document.querySelector('.card-body');
-
-            // Get the h2 (first child element)  
+  
+            if (!response.ok) {
+                throw new Error('Request failed with status: ' + response.status);
+            }          const cardBody = document.querySelector('.card-body');
             const h2 = cardBody.children[0];
-
-            // Get the p (second child element)
             const p = cardBody.children[1];
-
-            // Access innerText of h2 
             const title = h2.innerText;
-
-            // Access innerHTML of p
             const author = p.innerHTML;
-
 
             const book = {
                 "title": title,
                 "author": author,
                 "status": "Not started",
-                "pages": 12,
+                "pages": Number(12),
                 "pictures": "pp",
                 "prices": 23.12,
             }
+
 
             const url = "/add-book"
 
@@ -69,11 +64,13 @@
                 body: JSON.stringify(book)
             })
 
+
             const q = await response.json()
             console.log(q)
 
         }
         catch (err) {
+            throw new Error('Could not parse response JSON');
             console.log(err)
             // handle error 
         }
