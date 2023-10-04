@@ -101,7 +101,7 @@ func (r *DB) FilterBooks(status string, user_id int) []Book {
 
 func (r *DB) DeleteBook(id string) {
 
-	res, err := r.db.Exec("DELETE FROM websites WHERE id = ?", id)
+	res, err := r.db.Exec("DELETE FROM books WHERE id = ?", id)
 	if err != nil {
 		log.Println(err)
 	}
@@ -114,6 +114,7 @@ func (r *DB) DeleteBook(id string) {
 	if rowsAffected == 0 {
 		log.Println(err)
 	}
+
 
 }
 
