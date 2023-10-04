@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -27,10 +26,9 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 	var b Book
 	err = json.Unmarshal(res, &b)
 
-	fmt.Println(b)
-
 	if err != nil {
 		log.Println(err)
+
 		JSONWritter(w, 400, err)
 	}
 
@@ -43,22 +41,20 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 		if errors.As(err, &sqliteErr) {
 			if errors.Is(sqliteErr.ExtendedCode, sqlite3.ErrConstraintUnique) {
 				log.Println(err)
+
+				JSONWritter(w, 400, err)
 			}
 		}
 	}
 
+	_, err = response.LastInsertId()
+
 	if err != nil {
 		log.Println(err)
+		JSONWritter(w, 400, err)
 	}
 
-	id, err := response.LastInsertId()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	log.Println(id)
-
+	JSONWritter(w, 200, "Success")
 }
 
 func (q *DB) GetAllBooks(w http.ResponseWriter, r *http.Request) []Book {
@@ -164,6 +160,7 @@ func (r *DB) GetUsersBooks(user_id string) ([]Book, error) {
 	defer rows.Close()
 
 	var all []Book
+
 	for rows.Next() {
 		var b Book
 		if err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.UserID, &b.Status, &b.Prices, &b.Picture, &b.Pages, &b.Started_at, &b.Created_at); err != nil {

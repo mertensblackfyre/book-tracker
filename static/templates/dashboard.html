@@ -14,7 +14,6 @@
         crossorigin="anonymous"></script>
 </head>
 
-<link rel="manifest" href="../manifest.json">
 <title>Book Tracker</title>
 
 <body>
@@ -22,46 +21,31 @@
     {{ template "nav" . }}
 
     <div class="divider"></div>
-    <div class="overflow-x-auto w-full flex items-center justify-center">
-        <table id="table" class=" table w-11/12">
-            <!-- head -->
-            <thead>
-                <tr>
-                    <th>Title/Author</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                {{ range .}}
 
-                <tr class="hover" hx-on:click="click: redirect('/book/{{.ID}}')">
-                    <td>
-                        <div class="flex items-center space-x-3">
-                            <div>
-                                <div class="font-bold">{{.Title}}</div>
-                                <div class="text-sm opacity-50">{{ .Author}}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="badge badge-success">
-                            {{.Status}}
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-            {{end}}
 
-        </table>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        {{range .}}
+        <!-- Book card -->
+        <div class="card shadow-xl" hx-on:click="click: redirect('/book/{{.ID}}')" >
+            <figure>
+                <img src="" alt="Book">
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">{{.Title}}</h2>
+                <p>{{.Author}}</p>
+                <div class="badge badge-primary">{{.Status}}</div>
+            </div>
+        </div>
+
+        {{end}}
+    </div>
+
 </body>
 
 
 <script>
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/static/service-worker.js')
-    }
 
 
     function details() {

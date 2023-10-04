@@ -40,6 +40,10 @@ func main() {
 		tmpl.ExecuteTemplate(w, "index.html", nil)
 	})
 
+	r.Get("/user", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "users.html", nil)
+	})
+
 	r.Get("/mybooks", func(w http.ResponseWriter, r *http.Request) {
 		data := r.Context().Value("data").(string)
 		if data == "" {
@@ -66,7 +70,7 @@ func main() {
 	})
 
 	// Auth
-	r.Get("/auth/google", pkg.GoogleLogin)
+	r.Get("/auth/google", pkg.Login)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
 

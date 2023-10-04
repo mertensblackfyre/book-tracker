@@ -31,10 +31,18 @@ func JWT(data string) string {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
+
 	fmt.Println("SETT cookies")
 	str := JWT("1")
 
+    data := Users{
+        Name: "Cool",
+		Picture: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.jryuUgIHWL-1FVD2ww8oWgHaHa%26pid%3DApi&f=1&ipt=0fd7506ba6c5071ef907b0ea3537ca197dc8b919bd03cf1cb172b9ebd91e4768&ipo=images",
+	}
+
 	// fmt.Println(str)
+
+
 	// Set token cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Token",
@@ -44,6 +52,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Expires: time.Now().Add(30 * time.Minute),
 	})
 
+    JSONWritter(w,200,data)
 	http.Redirect(w, r, "/mybooks", 302)
 }
 
@@ -109,6 +118,8 @@ func GoogleCallBack(w http.ResponseWriter, r *http.Request) {
 		Path:    "/",
 		Expires: time.Now().Add(30 * time.Minute),
 	})
+
+	JSONWritter(w, 200, user)
 
 	http.Redirect(w, r, "/mybooks", 302)
 
