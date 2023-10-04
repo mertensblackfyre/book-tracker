@@ -37,11 +37,11 @@ func main() {
 	}))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index.html", nil)
+		tmpl.ExecuteTemplate(w, "index.templ", nil)
 	})
 
 	r.Get("/user", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "users.html", nil)
+		tmpl.ExecuteTemplate(w, "users.templ", nil)
 	})
 
 	r.Get("/mybooks", func(w http.ResponseWriter, r *http.Request) {
@@ -57,20 +57,20 @@ func main() {
 			return
 		}
 
-		tmpl.ExecuteTemplate(w, "dashboard.html", books)
+		tmpl.ExecuteTemplate(w, "dashboard.templ", books)
 	})
 
 	r.Get("/addbook", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "addbook.html", nil)
+		tmpl.ExecuteTemplate(w, "addbook.templ", nil)
 	})
 
 	// Public routes
 	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "login.html", nil)
+		tmpl.ExecuteTemplate(w, "login.templ", nil)
 	})
 
 	// Auth
-	r.Get("/auth/google", pkg.Login)
+	r.Get("/auth/google", pkg.GoogleLogin)
 	r.Get("/auth/callback", pkg.GoogleCallBack)
 	r.Get("/logout", pkg.Logout)
 
@@ -91,7 +91,7 @@ func main() {
 			fmt.Println(err)
 		}
 
-		tmpl.ExecuteTemplate(w, "details.html", book)
+		tmpl.ExecuteTemplate(w, "details.templ", book)
 
 	})
 

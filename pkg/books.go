@@ -32,7 +32,7 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 		JSONWritter(w, 400, err)
 	}
 
-	response, err := q.db.Exec("INSERT INTO books (title ,author,status,pages,price,picture,user_id) VALUES (?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, data)
+	response, err := q.db.Exec("INSERT INTO books (title ,author,status,pages,price,picture,started_at,user_id) VALUES (?,?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, b.Started_at, data)
 
 	if err != nil {
 
