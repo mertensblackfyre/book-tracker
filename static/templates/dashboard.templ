@@ -30,7 +30,7 @@
         <!-- Book card -->
         <div class="card shadow-xl" hx-on:click="click: redirect('/book/{{.ID}}')" >
             <figure>
-                <img src="" alt="Book">
+                <img src='https://covers.openlibrary.org/b/isbn/{{.Picture}}-M.jpg' alt="Book">
             </figure>
             <div class="card-body">
                 <h2 class="card-title">{{.Title}}</h2>

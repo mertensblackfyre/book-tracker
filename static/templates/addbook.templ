@@ -1,4 +1,4 @@
-<!DOCTYPE html >
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -21,8 +21,10 @@
 </head>
 
 {{ template "nav" . }}
-
 <div class="divider"></div>
+<div id="toast" class="toast toast-top toast-end w-11/12 flex items-center ">
+
+</div>
 
 <div class="w-full  flex items-center justify-center mt-5 flex-col">
     <input type="text" id="input" placeholder="Type here" class=" my-5  input input-ghost w-full max-w-xs" />
@@ -43,6 +45,8 @@
     const searchInput = document.getElementById("input")
 
     async function saveBooks(data) {
+        const d = document.getElementById("toast")
+
         try {
 
             // Get the div with class "card-body"
@@ -50,17 +54,21 @@
             const cardBody = document.querySelector('.card-body');
             const h2 = cardBody.children[0];
             const p = cardBody.children[1];
+
+            const p1 = cardBody.children[2];
+
             const title = h2.innerText;
             const author = p.innerHTML;
+
 
             const book = {
                 "title": title,
                 "author": author,
                 "status": "Not started",
                 "pages": Number(12),
-                "pictures": "pp",
+                "picture": p1.innerHTML,
                 "prices": 23.12,
-                "started_at" : "May"
+                "started_at": "May"
             }
 
 
@@ -70,14 +78,36 @@
                 method: "POST",
                 body: JSON.stringify(book)
             })
-        
+
 
             const q = await response.json()
             console.log(q)
 
+            d.innerHTML = `
+            <div class="alert alert-success w-[300px]">
+        <span>Book added successfully.</span>
+    </div>`
+
+            setTimeout(() => {
+                d.innerHTML = ``
+                // runs after 2 seconds
+            }, 3000);
+
         }
         catch (err) {
-           // throw new Error('Could not parse response JSON');
+
+            d.innerHTML = `
+            <div class="alert alert-error w-[300px]">
+        <span>${err}</span>
+    </div>`
+
+            setTimeout(() => {
+                d.innerHTML = ``
+                // runs after 2 seconds
+            }, 3000);
+
+ 
+            // throw new Error('Could not parse response JSON');
             console.log(err)
             // handle error 
         }
@@ -91,6 +121,8 @@
 
         // Get JSON results
         const data = await results.json();
+        //  https://covers.openlibrary.org/b/id/12547191-L.jpg
+
         return data.docs
     }
 
@@ -104,7 +136,6 @@
             const div = document.createElement("div")
             const classes = 'card w-11/12 bg-base-100 shadow-xl my-2'.split(' ');
 
-
             classes.forEach(c => {
                 div.classList.add(c);
             });
@@ -114,6 +145,7 @@
             <div class="card-body w-11/12">
                 <h2 class="card-title">${book.title}</h2>
                 <p>${book.author_name[0]}</p>
+            <p  style="display:none;" >${book.isbn[0]}</p>
                 <div class="card-actions justify-end">
                  <button onclick="saveBooks(event)" class="btn btn-active btn-primary">
  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18px" height="18px">

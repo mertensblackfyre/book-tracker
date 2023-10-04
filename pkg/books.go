@@ -28,9 +28,9 @@ func (q *DB) AddBook(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
-
 		JSONWritter(w, 400, err)
 	}
+
 
 	response, err := q.db.Exec("INSERT INTO books (title ,author,status,pages,price,picture,started_at,user_id) VALUES (?,?,?,?,?,?,?,?)", b.Title, b.Author, b.Status, b.Pages, b.Prices, b.Picture, b.Started_at, data)
 
@@ -63,6 +63,9 @@ func (q *DB) GetAllBooks(w http.ResponseWriter, r *http.Request) []Book {
 	if err != nil {
 		log.Println(err)
 	}
+
+
+
 
 	defer rows.Close()
 

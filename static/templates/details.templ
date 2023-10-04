@@ -31,9 +31,10 @@
 
 
         <!-- Book detail -->
-        <div class="card lg:card-side bg-base-100 shadow-xl">
+        <div id="detail" class="card lg:card-side bg-base-100 shadow-xl">
             <figure class="w-1/3">
-                <img src="book.jpg" alt="Book">
+
+                <img src='https://covers.openlibrary.org/b/isbn/{{.Picture}}-M.jpg' alt="Book">
             </figure>
             <div class="card-body">
                 <h2 class="card-title">{{.Title}}</h2>
@@ -49,7 +50,7 @@
 
                 <div class="card-actions justify-end">
                     <button class="btn  btn-sm btn-primary">Edit</button>
-                    <button hx-delete="/delete-{{.ID}}" class="btn btn-sm btn-error">Delete</button>
+                    <button hx-delete="/delete-{{.ID}}" hx-swap="delete" hx-target="#detail" class="btn btn-sm btn-error">Delete</button>
                 </div>
             </div>
         </div>
