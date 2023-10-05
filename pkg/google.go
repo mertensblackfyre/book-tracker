@@ -10,7 +10,7 @@ func GoogleAuthConfig() *oauth2.Config {
 	var url string
 
 	if GetEnv("NODE_ENV") == "production" {
-		url = "https://book-ssp0.onrender.com"
+		url = "https://backend-t76n.onrender.com"
 	}
 
 	if GetEnv("NODE_ENV") == "development" {
