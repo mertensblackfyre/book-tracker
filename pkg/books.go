@@ -119,6 +119,9 @@ func (r *DB) DeleteBook(id string) {
 	}
 
 
+    return
+
+
 }
 
 func (r *DB) UpdateBookStatus(book_id int, status string) {

@@ -110,7 +110,6 @@ func main() {
 	r.Put("/change-{status}-{id}", func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(chi.URLParam(r, "id"))
 		status := chi.URLParam(r, "status")
-
 		if err != nil {
 			log.Println(err)
 		}

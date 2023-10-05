@@ -52,25 +52,21 @@
             // Get the div with class "card-body"
 
             const cardBody = document.querySelector('.card-body');
-            const h2 = cardBody.children[0];
-            const p = cardBody.children[1];
-
-            const p1 = cardBody.children[2];
-
-            const title = h2.innerText;
-            const author = p.innerHTML;
-
+            
+            const title = cardBody.children[0].innerText;
+            const author = cardBody.children[1].innerHTML;
+	    const picture = cardBody.children[2].innerHTML
+	    const pages = cardBody.children[3].innerHTML
 
             const book = {
                 "title": title,
                 "author": author,
-                "status": "Not started",
-                "pages": Number(12),
-                "picture": p1.innerHTML,
+                "status": "Want to buy",
+                "pages": Number(pages),
+                "picture": picture,
                 "prices": 23.12,
-                "started_at": "May"
+                "started_at": "Not Started"
             }
-
 
             const url = "/add-book"
 
@@ -79,13 +75,11 @@
                 body: JSON.stringify(book)
             })
 
-
             const q = await response.json()
-            console.log(q)
 
             d.innerHTML = `
             <div class="alert alert-success w-[300px]">
-        <span>Book added successfully.</span>
+	<span> ${title}added successfully.</span>
     </div>`
 
             setTimeout(() => {
@@ -146,6 +140,7 @@
                 <h2 class="card-title">${book.title}</h2>
                 <p>${book.author_name[0]}</p>
             <p  style="display:none;" >${book.isbn[0]}</p>
+            <p  style="display:none;" >${book.number_of_pages_median}</p>
                 <div class="card-actions justify-end">
                  <button onclick="saveBooks(event)" class="btn btn-active btn-primary">
  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18px" height="18px">
@@ -158,7 +153,6 @@
             body.appendChild(div);
         })
     }
-
 
     searchInput.addEventListener('input', async () => {
         const query = searchInput.value;
@@ -174,7 +168,5 @@
         render(data)
     });
 
-
 </script>
-
 </html>

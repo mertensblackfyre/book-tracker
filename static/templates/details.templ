@@ -30,38 +30,83 @@
     <div class="container mx-auto p-4">
 
 
-        <!-- Book detail -->
         <div id="detail" class="card lg:card-side bg-base-100 shadow-xl">
-            <figure class="w-1/3">
 
+            <figure class="w-1/3 flex">
                 <img src='https://covers.openlibrary.org/b/isbn/{{.Picture}}-M.jpg' alt="Book">
             </figure>
+
             <div class="card-body">
                 <h2 class="card-title">{{.Title}}</h2>
                 <p>{{.Author}}</p>
 
-                <div class="badge badge-secondary">Fiction</div>
-
                 <div class="badge badge-info">{{.Pages}} Pages</div>
-
+                {{if eq .Status "Want to buy"}}
                 <div class="badge badge-primary">{{.Status}}</div>
-
-                <p>Summary/description...</p>
+                {{else if eq .Status "Currently Reading"}}
+                <div class="badge badge-warning">{{.Status}}</div>
+                {{else}}
+                <div class="badge badge-success">{{.Status}}</div>
+                {{end}}
 
                 <div class="card-actions justify-end">
-                    <button class="btn  btn-sm btn-primary">Edit</button>
-                    <button hx-delete="/delete-{{.ID}}" hx-swap="delete" hx-target="#detail" class="btn btn-sm btn-error">Delete</button>
+                    <button id="edit-btn" class="btn btn-sm btn-primary">Edit</button>
+
+                    <button hx-delete="/delete-{{.ID}}" hx-swap="delete" hx-target="#detail" hx-redirect="/books"
+                        class="btn btn-sm btn-error">Delete</button>
                 </div>
             </div>
+
         </div>
 
+        <input type="checkbox" id="edit-modal" class="modal-toggle" />
+        <div class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg">Edit Book</h3>
+                <form>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                            <span class="label-text">Category</span>
+                        </label>
+                        <select class="select select-bordered w-full">
+                            <option value="Want to buy">Next to buy</option>
+                            <option value="Finished">Finished</option>
+                            <option value="Currently Reading">Currently Reading</option>
+                        </select>
+                    </div>
+                    <div class="modal-action">
+                        <label for="edit-modal" class="btn">Close</label>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
 
     </div>
 
 </body>
 
 <script>
+    const editBtn = document.querySelector('#edit-btn');
+    const modal = document.querySelector('#edit-modal');
 
+    editBtn.addEventListener('click', () => {
+        modal.checked = true;
+    });
+
+    const categorySelect = document.querySelector('.modal-box select');
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        const selectedCategory = categorySelect.value;
+        const currentPath = window.location.pathname;
+        const match = currentPath.match(/\d+/);
+        const id = match[0];
+        update(selectedCategory, id)
+
+    });
 
     async function update(status, id) {
         try {
