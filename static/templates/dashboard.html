@@ -1,66 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
+      <meta name="theme-color" content="dark" />
+      <link
+         href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css"
+         rel="stylesheet"
+         type="text/css"
+      />
 
-    <meta name="theme-color" content="dark" />
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script
+         src="https://unpkg.com/htmx.org@1.9.5"
+         integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
+         crossorigin="anonymous"
+      ></script>
+   </head>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.5"
-        integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
-        crossorigin="anonymous"></script>
-</head>
+   <title>Book Tracker</title>
 
-<title>Book Tracker</title>
+   <body>
+      {{ template "nav" . }}
 
-<body>
+      <div class="divider"></div>
 
-    {{ template "nav" . }}
-
-    <div class="divider"></div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-        {{range .}}
-        <!-- Book card -->
-        <div class="card shadow-xl" hx-on:click="click: redirect('/book/{{.ID}}')" >
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+         {{range .}}
+         <!-- Book card -->
+         <div
+            class="card shadow-xl"
+            hx-on:click="click: redirect('/book/{{.ID}}')"
+         >
             <figure>
-                <img src='https://covers.openlibrary.org/b/isbn/{{.Picture}}-M.jpg' alt="Book">
+               <img
+                  src="https://covers.openlibrary.org/b/isbn/{{.Picture}}-M.jpg"
+                  alt="Book"
+               />
             </figure>
             <div class="card-body">
-                <h2 class="card-title">{{.Title}}</h2>
-                <p>{{.Author}}</p>
-                {{if eq .Status "Want to buy"}}
-                <div class="badge badge-primary">{{.Status}}</div>
-                {{else if eq .Status "Currently Reading"}}
-                <div class="badge badge-warning">{{.Status}}</div>
-                {{else}}
-                <div class="badge badge-success">{{.Status}}</div>
-                {{end}}
- 
+               <h2 class="card-title">{{.Title}}</h2>
+               <p>{{.Author}}</p>
+               {{if eq .Status "Want to buy"}}
+               <div class="badge badge-primary">{{.Status}}</div>
+               {{else if eq .Status "Currently Reading"}}
+               <div class="badge badge-warning">{{.Status}}</div>
+               {{else}}
+               <div class="badge badge-success">{{.Status}}</div>
+               {{end}}
             </div>
-        </div>
+         </div>
 
-        {{end}}
-    </div>
+         {{end}}
+      </div>
+   </body>
 
-</body>
-
-
-<script>
-
-
-    function details() {
-        console.log("Hello World")
-    }
-
-    function redirect(url) {
-        window.location = url
-    }
-
-</script>
-
+   <script>
+      function redirect(url) {
+         window.location = url;
+      }
+   </script>
 </html>

@@ -48,15 +48,12 @@
         const d = document.getElementById("toast")
 
         try {
-
             // Get the div with class "card-body"
-
-            const cardBody = document.querySelector('.card-body');
-            
+            const cardBody = data.target.parentElement.parentElement
             const title = cardBody.children[0].innerText;
-            const author = cardBody.children[1].innerHTML;
-	    const picture = cardBody.children[2].innerHTML
-	    const pages = cardBody.children[3].innerHTML
+            const author = cardBody.children[1].innerText;
+	        const picture = cardBody.children[2].innerText
+            const pages = cardBody.children[3].innerText
 
             const book = {
                 "title": title,
@@ -79,12 +76,11 @@
 
             d.innerHTML = `
             <div class="alert alert-success w-[300px]">
-	<span> ${title}added successfully.</span>
+	<span> ${title} added successfully.</span>
     </div>`
 
             setTimeout(() => {
                 d.innerHTML = ``
-                // runs after 2 seconds
             }, 3000);
 
         }
@@ -97,13 +93,9 @@
 
             setTimeout(() => {
                 d.innerHTML = ``
-                // runs after 2 seconds
             }, 3000);
 
- 
-            // throw new Error('Could not parse response JSON');
             console.log(err)
-            // handle error 
         }
 
     }
@@ -136,7 +128,7 @@
 
             div.innerHTML = `
 
-            <div class="card-body w-11/12">
+            <div id="c" class="card-body w-11/12">
                 <h2 class="card-title">${book.title}</h2>
                 <p>${book.author_name[0]}</p>
             <p  style="display:none;" >${book.isbn[0]}</p>

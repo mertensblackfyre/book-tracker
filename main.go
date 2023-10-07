@@ -39,11 +39,11 @@ func main() {
 	}))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index.templ", nil)
+		tmpl.ExecuteTemplate(w, "index.html", nil)
 	})
 
 	r.Get("/user", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "users.templ", nil)
+		tmpl.ExecuteTemplate(w, "users.html", nil)
 	})
 
 	r.Get("/mybooks", func(w http.ResponseWriter, r *http.Request) {
@@ -59,16 +59,16 @@ func main() {
 			return
 		}
 
-		tmpl.ExecuteTemplate(w, "dashboard.templ", books)
+		tmpl.ExecuteTemplate(w, "dashboard.html", books)
 	})
 
 	r.Get("/addbook", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "addbook.templ", nil)
+		tmpl.ExecuteTemplate(w, "addbook.html", nil)
 	})
 
 	// Public routes
 	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "login.templ", nil)
+		tmpl.ExecuteTemplate(w, "login.html", nil)
 	})
 
 	// Auth
@@ -93,7 +93,7 @@ func main() {
 			fmt.Println(err)
 		}
 
-		tmpl.ExecuteTemplate(w, "details.templ", book)
+		tmpl.ExecuteTemplate(w, "details.html", book)
 
 	})
 

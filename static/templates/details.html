@@ -1,132 +1,135 @@
 <!DOCTYPE html>
 
 <html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
+      <meta name="theme-color" content="dark" />
+      <link
+         href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css"
+         rel="stylesheet"
+         type="text/css"
+      />
 
-    <meta name="theme-color" content="dark" />
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css" rel="stylesheet" type="text/css" />
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script
+         src="https://unpkg.com/htmx.org@1.9.5"
+         integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
+         crossorigin="anonymous"
+      ></script>
 
+      <title>Book Tracker</title>
+   </head>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.5"
-        integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
-        crossorigin="anonymous"></script>
+   <body>
+      {{ template "nav" . }}
 
+      <div class="divider"></div>
 
-    <link rel="manifest" href="../manifest.json">
-    <title>Book Tracker</title>
-
-</head>
-
-<body>
-
-    {{ template "nav" . }}
-
-    <div class="divider"></div>
-
-    <div class="container mx-auto p-4">
-
-
-        <div id="detail" class="card lg:card-side bg-base-100 shadow-xl">
-
+      <div class="container mx-auto p-4">
+         <div id="detail" class="card lg:card-side bg-base-100 shadow-xl">
             <figure class="w-1/3 flex">
-                <img src='https://covers.openlibrary.org/b/isbn/{{.Picture}}-M.jpg' alt="Book">
+               <img
+                  src="https://covers.openlibrary.org/b/isbn/{{.Picture}}-M.jpg"
+                  alt="Book"
+               />
             </figure>
 
             <div class="card-body">
-                <h2 class="card-title">{{.Title}}</h2>
-                <p>{{.Author}}</p>
+               <h2 class="card-title">{{.Title}}</h2>
+               <p>{{.Author}}</p>
 
-                <div class="badge badge-info">{{.Pages}} Pages</div>
-                {{if eq .Status "Want to buy"}}
-                <div class="badge badge-primary">{{.Status}}</div>
-                {{else if eq .Status "Currently Reading"}}
-                <div class="badge badge-warning">{{.Status}}</div>
-                {{else}}
-                <div class="badge badge-success">{{.Status}}</div>
-                {{end}}
+               <div class="badge badge-info">{{.Pages}} Pages</div>
+               {{if eq .Status "Want to buy"}}
+               <div class="badge badge-primary">{{.Status}}</div>
+               {{else if eq .Status "Currently Reading"}}
+               <div class="badge badge-warning">{{.Status}}</div>
+               {{else}}
+               <div class="badge badge-success">{{.Status}}</div>
+               {{end}}
 
-                <div class="card-actions justify-end">
-                    <button id="edit-btn" class="btn btn-sm btn-primary">Edit</button>
+               <div class="card-actions justify-end">
+                  <button id="edit-btn" class="btn btn-sm btn-primary">
+                     Edit
+                  </button>
 
-                    <button hx-delete="/delete-{{.ID}}" hx-swap="delete" hx-target="#detail" hx-redirect="/books"
-                        class="btn btn-sm btn-error">Delete</button>
-                </div>
+                  <button
+                     hx-delete="/delete-{{.ID}}"
+                     hx-swap="delete"
+                     hx-target="#detail"
+                     hx-redirect="/books"
+                     class="btn btn-sm btn-error"
+                  >
+                     Delete
+                  </button>
+               </div>
             </div>
+         </div>
 
-        </div>
-
-        <input type="checkbox" id="edit-modal" class="modal-toggle" />
-        <div class="modal">
+         <input type="checkbox" id="edit-modal" class="modal-toggle" />
+         <div class="modal">
             <div class="modal-box">
-                <h3 class="font-bold text-lg">Edit Book</h3>
-                <form>
-                    <div class="form-control w-full max-w-xs">
-                        <label class="label">
-                            <span class="label-text">Category</span>
-                        </label>
-                        <select class="select select-bordered w-full">
-                            <option value="Want to buy">Next to buy</option>
-                            <option value="Finished">Finished</option>
-                            <option value="Currently Reading">Currently Reading</option>
-                        </select>
-                    </div>
-                    <div class="modal-action">
-                        <label for="edit-modal" class="btn">Close</label>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-
-                </form>
+               <h3 class="font-bold text-lg">Edit Book</h3>
+               <form>
+                  <div class="form-control w-full max-w-xs">
+                     <label class="label">
+                        <span class="label-text">Category</span>
+                     </label>
+                     <select class="select select-bordered w-full">
+                        <option value="Want to buy">Next to buy</option>
+                        <option value="Finished">Finished</option>
+                        <option value="Currently Reading">
+                           Currently Reading
+                        </option>
+                     </select>
+                  </div>
+                  <div class="modal-action">
+                     <label for="edit-modal" class="btn">Close</label>
+                     <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+               </form>
             </div>
-        </div>
+         </div>
+      </div>
+   </body>
 
-    </div>
+   <script>
+      const editBtn = document.querySelector("#edit-btn");
+      const modal = document.querySelector("#edit-modal");
 
-</body>
+      editBtn.addEventListener("click", () => {
+         modal.checked = true;
+      });
 
-<script>
-    const editBtn = document.querySelector('#edit-btn');
-    const modal = document.querySelector('#edit-modal');
+      const categorySelect = document.querySelector(".modal-box select");
 
-    editBtn.addEventListener('click', () => {
-        modal.checked = true;
-    });
+      const form = document.querySelector("form");
+      form.addEventListener("submit", (event) => {
+         event.preventDefault();
+         const selectedCategory = categorySelect.value;
+         const currentPath = window.location.pathname;
+         const match = currentPath.match(/\d+/);
+         const id = match[0];
+         update(selectedCategory, id);
+      });
 
-    const categorySelect = document.querySelector('.modal-box select');
-
-    const form = document.querySelector('form');
-    form.addEventListener('submit', (event) => {
-        event.preventDefault()
-        const selectedCategory = categorySelect.value;
-        const currentPath = window.location.pathname;
-        const match = currentPath.match(/\d+/);
-        const id = match[0];
-        update(selectedCategory, id)
-
-    });
-
-    async function update(status, id) {
-        try {
-            const url = `/change-${status}-${id}`
+      async function update(status, id) {
+         try {
+            const url = `/change-${status}-${id}`;
 
             const response = await fetch(url, {
-                method: "PUT",
-            })
+               method: "PUT",
+            });
 
             window.location.reload();
-        }
-        catch (err) {
-            console.log(err)
-        }
-    }
+         } catch (err) {
+            console.log(err);
+         }
+      }
 
-    function redirect(url) {
-        window.location = url
-    }
-
-</script>
-
+      function redirect(url) {
+         window.location = url;
+      }
+   </script>
 </html>
