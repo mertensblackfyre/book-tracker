@@ -39,11 +39,7 @@ func main() {
 	}))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index.html", nil)
-	})
-
-	r.Get("/user", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "users.html", nil)
+		tmpl.ExecuteTemplate(w, "index.tmpl", nil)
 	})
 
 	r.Get("/mybooks", func(w http.ResponseWriter, r *http.Request) {
@@ -59,16 +55,16 @@ func main() {
 			return
 		}
 
-		tmpl.ExecuteTemplate(w, "dashboard.html", books)
+		tmpl.ExecuteTemplate(w, "dashboard.tmpl", books)
 	})
 
 	r.Get("/addbook", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "addbook.html", nil)
+		tmpl.ExecuteTemplate(w, "addbook.tmpl", nil)
 	})
 
 	// Public routes
 	r.Get("/login", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "login.html", nil)
+		tmpl.ExecuteTemplate(w, "login.tmpl", nil)
 	})
 
 	// Auth
@@ -93,7 +89,7 @@ func main() {
 			fmt.Println(err)
 		}
 
-		tmpl.ExecuteTemplate(w, "details.html", book)
+		tmpl.ExecuteTemplate(w, "details.tmpl", book)
 
 	})
 
@@ -117,7 +113,6 @@ func main() {
 		}
 
 		q.UpdateBookStatus(id, status)
-
 	})
 
 	http.ListenAndServe(":5000", r)
